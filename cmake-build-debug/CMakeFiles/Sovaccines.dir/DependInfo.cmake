@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/aluno-di/Desktop/Sovaccines/ads.c" "/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/CMakeFiles/Sovaccines.dir/ads.c.o"
+  "/home/aluno-di/Desktop/Sovaccines/test_linux.c" "/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/CMakeFiles/Sovaccines.dir/test_linux.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

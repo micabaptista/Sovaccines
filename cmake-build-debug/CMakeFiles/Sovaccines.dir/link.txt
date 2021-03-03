@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/Sovaccines.dir/ads.c.o  -o Sovaccines 
+/usr/bin/cc -g   CMakeFiles/Sovaccines.dir/ads.c.o CMakeFiles/Sovaccines.dir/test_linux.c.o  -o Sovaccines 

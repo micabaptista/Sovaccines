@@ -170,6 +170,33 @@ ads.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sovaccines.dir/build.make CMakeFiles/Sovaccines.dir/ads.c.s
 .PHONY : ads.c.s
 
+test_linux.o: test_linux.c.o
+
+.PHONY : test_linux.o
+
+# target to build an object file
+test_linux.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sovaccines.dir/build.make CMakeFiles/Sovaccines.dir/test_linux.c.o
+.PHONY : test_linux.c.o
+
+test_linux.i: test_linux.c.i
+
+.PHONY : test_linux.i
+
+# target to preprocess a source file
+test_linux.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sovaccines.dir/build.make CMakeFiles/Sovaccines.dir/test_linux.c.i
+.PHONY : test_linux.c.i
+
+test_linux.s: test_linux.c.s
+
+.PHONY : test_linux.s
+
+# target to generate assembly for a file
+test_linux.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sovaccines.dir/build.make CMakeFiles/Sovaccines.dir/test_linux.c.s
+.PHONY : test_linux.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -182,6 +209,9 @@ help:
 	@echo "... ads.o"
 	@echo "... ads.i"
 	@echo "... ads.s"
+	@echo "... test_linux.o"
+	@echo "... test_linux.i"
+	@echo "... test_linux.s"
 .PHONY : help
 
 

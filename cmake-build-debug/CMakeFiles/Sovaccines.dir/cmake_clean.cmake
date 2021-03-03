@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Sovaccines.dir/ads.c.o"
+  "CMakeFiles/Sovaccines.dir/test_linux.c.o"
   "Sovaccines"
   "Sovaccines.pdb"
 )

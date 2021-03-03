@@ -14,4 +14,4 @@ add_executable(Sovaccines
     projeto1-headers/proxy.h
     projeto1-headers/server.h
     projeto1-headers/synchronization.h
-    ads.c)
+    ads.c test_linux.c)
