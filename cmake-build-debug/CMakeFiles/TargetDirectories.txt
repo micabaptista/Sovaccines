@@ -1,3 +1,0 @@
-/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/CMakeFiles/Sovaccines.dir
