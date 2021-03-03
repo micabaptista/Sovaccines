@@ -107,6 +107,9 @@
 		<Unit filename="/home/aluno-di/Desktop/Sovaccines/projeto1-headers/synchronization.h">
 			<Option target="Sovaccines"/>
 		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/test_linux.c">
+			<Option target="Sovaccines"/>
+		</Unit>
 		<Unit filename="/home/aluno-di/Desktop/Sovaccines/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
