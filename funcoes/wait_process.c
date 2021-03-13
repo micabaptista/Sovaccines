@@ -1,8 +1,4 @@
 
-
-
-
-
 /* Função que espera que um processo termine através da função waitpid. 
 * Devolve o retorno do processo, se este tiver terminado normalmente.
 */

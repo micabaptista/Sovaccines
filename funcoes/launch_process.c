@@ -6,7 +6,7 @@
 #include <sys/types.h>
 
 
-
+//process.h
 /* Função que inicia um processo através da função fork do SO. O novo
 * processo pode ser um cliente, proxy, ou servidor, consoante a variável
 * process_code tem valor 0, 1, ou 2 respectivamente, e irá executar a função
@@ -29,17 +29,17 @@ int launch_process(int process_id, int process_code, struct communication_buffer
     /* Processo filho */
         if (process_code == 0)
         {
-            value = execute_client( /*nao sei se é isto*/ getpid(),  buffers,  data,  sems);
+            value = execute_client( /*nao sei se é isto*/process_id,  buffers,  data,  sems);
             exit(value);
         }
         else if (process_code ==1)
         {
-            value = execute_proxy( /*nao sei se é isto*/ getpid(),  buffers,  data,  sems);
+            value = execute_proxy( /*nao sei se é isto*/ process_id,  buffers,  data,  sems);
             exit(value);
         }
         else if (process_code == 2)
         {
-            value = execute_server(/*nao sei se é isto*/ getpid(),  buffers,  data,  sems);
+            value = execute_server(/*nao sei se é isto*/ process_id,  buffers,  data,  sems);
             exit(value);
 
         }

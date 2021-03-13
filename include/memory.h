@@ -26,6 +26,7 @@ struct operation {
 };
 
 
+
 //estrutura que agrega os shared memory buffers necessários para comunicação entre processos
 struct communication_buffers {
 	struct rnd_access_buffer* main_cli; //buffer para main fazer pedidos a clientes
