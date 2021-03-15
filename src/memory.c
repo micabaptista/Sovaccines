@@ -14,10 +14,13 @@
 */
 void *create_shared_memory(char *name, int size) {
 
-    char *id = strcat(name, *getuid());
+    char id = getuid();
+    char copy[strlen(name)]; // declarar uma string do msm tamanho do name
+    strcpy(copy, name);      // copiar a string que vem do pointer name para a variavel copy
+    strcat(copy, &id);   // concatenar o id gerado com o nome passado por argumento.
     int *ptr;
     int ret;
-    int fd = shm_open(id, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int fd = shm_open(copy, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
         perror("shm");
         exit(1);
@@ -29,12 +32,11 @@ void *create_shared_memory(char *name, int size) {
         exit(2);
     }
     ptr = mmap(0, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (ptr == M
-        AP_FAILED){
+    if (ptr == MAP_FAILED) {
         perror("shm-mmap");
         exit(3);
     }
-    return ptr * ;
+    return ptr;
 }
 
 
@@ -42,17 +44,35 @@ void *create_shared_memory(char *name, int size) {
 * por size, preenche essa zona de memória com o valor 0, e retorna um
 * apontador para a mesma.
 */
-void *create_dynamic_memory(int size);
+void *create_dynamic_memory(int size) {
+    void *ptr = malloc(size);
+    return memset(ptr, 0, size);
+}
 
 
 /* Função que liberta uma zona de memória dinâmica previamente reservada.
 */
-void destroy_shared_memory(char *name, void *ptr, int size);
+void destroy_shared_memory(char *name, void *ptr, int size) {
+
+    int ret = munmap(&ptr, size);
+    if (ret == -1) {
+        perror(name);
+        exit(7);
+    }
+    ret = shm_unlink(name);
+    if (ret == -1) {
+        perror(name);
+        exit(8);
+    }
+    exit(0);
+}
 
 
 /* Função que liberta uma zona de memória partilhada previamente reservada.
 */
-void destroy_dynamic_memory(void *ptr);
+void destroy_dynamic_memory(void *ptr){
+    free(ptr);
+}
 
 
 /* Função que escreve uma operação num buffer de acesso aleatório. A
