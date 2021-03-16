@@ -70,7 +70,7 @@ void destroy_shared_memory(char *name, void *ptr, int size) {
 
 /* Função que liberta uma zona de memória partilhada previamente reservada.
 */
-void destroy_dynamic_memory(void *ptr){
+void destroy_dynamic_memory(void *ptr) {
     free(ptr);
 }
 
@@ -80,15 +80,31 @@ void destroy_dynamic_memory(void *ptr){
 * regras de escrita em buffers de acesso aleatório. Se não houver nenhuma
 * posição livre, não escreve nada.
 */
-void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op);
-
+void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op) {
+    int n;
+    while (true) {
+        for (n = 0; n < buffer_size; n++) {
+            if (buffer->ptr[n] == 0) {
+                buffer->buffer[n] = op;
+                buffer->ptr[n] = 1;
+                break;
+            }
+        }
+    }
+}
 
 /* Função que escreve uma operação num buffer circular. A operação deve
 * ser escrita numa posição livre do buffer, segundo as regras de escrita
 * em buffers circulares. Se não houver nenhuma posição livre, não escreve
 * nada.
 */
-void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op);
+void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
+    while (true) {
+        while (((buffer->in + 1) % buffer_size) == buffer->out)
+            buffer->buffer[in] = op;
+        buffer->in = (buffer->in + 1) % buffer_size;
+    }
+}
 
 
 /* Função que lê uma operação de um buffer de acesso aleatório, se houver
@@ -96,14 +112,29 @@ void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, stru
 * de leitura em buffers acesso aleatório. Se não houver nenhuma operação
 * disponível, afeta op com o valor -1.
 */
-void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op);
-
+void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op) {
+    int n;
+    while (true) {
+        for (n = 0; n < buffer_size; n++) {
+            if (buffer->ptr[n] == 1) {
+                op = buffer->buffer[n];
+                buffer->ptr[n] = 0;
+                break;
+            }
+        }
+    }
+}
 
 /* Função que lê uma operação de um buffer circular, se houver alguma
 * disponível para ler. A leitura deve ser feita segundo as regras de
 * leitura em buffers circular. Se não houver nenhuma operação disponível,
 * afeta op->id com o valor -1.
 */
-void read_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op);
-
+void read_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
+    while (true) {
+        while (buffer->in == buffer->out);
+        op = buffer->buffer[buffer->out];
+        buffer->out = (buffer->out + 1) % buffer_size;
+    }
+}
 
