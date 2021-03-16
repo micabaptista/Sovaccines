@@ -20,13 +20,13 @@
 
 
 //Estrutura que representa uma operação (pedido/resposta)
-struct operation {
+typedef struct operation {
 	int id; 		//id da operação
 	char status;	//estado da operação. Pode ser 'C', 'P', 'S'
 	int client;		//id do cliente que a recebeu
 	int proxy; 		//id do proxy que a encaminhou
 	int server;		//id do server que a serviu
-};
+} operation;
 
 
 
