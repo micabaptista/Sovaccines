@@ -82,13 +82,11 @@ void destroy_dynamic_memory(void *ptr) {
 */
 void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op) {
     int n;
-    while (true) {
-        for (n = 0; n < buffer_size; n++) {
-            if (buffer->ptr[n] == 0) {
-                buffer->buffer[n] = op;
-                buffer->ptr[n] = 1;
-                break;
-            }
+    for (n = 0; n < buffer_size; n++) {
+        if (buffer->ptr[n] == 0) {
+            buffer->buffer[n] = op;
+            buffer->ptr[n] = 1;
+            break;
         }
     }
 }
@@ -99,10 +97,12 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
 * nada.
 */
 void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
-    while (true) {
-        while (((buffer->in + 1) % buffer_size) == buffer->out)
-            buffer->buffer[in] = op;
-        buffer->in = (buffer->in + 1) % buffer_size;
+    for (int i = 0; i < buffer_size; ++i) {
+        if ((((in + 1) % BUFFER_SIZE) != out)) {
+            buffer->buffer[buffer->in] = op;
+            buffer->in = (buffer->in + 1) % buffer_size;
+            break;
+        }
     }
 }
 
@@ -114,15 +114,16 @@ void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, stru
 */
 void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, struct operation *op) {
     int n;
-    while (true) {
-        for (n = 0; n < buffer_size; n++) {
-            if (buffer->ptr[n] == 1) {
-                op = buffer->buffer[n];
-                buffer->ptr[n] = 0;
-                break;
-            }
+    for (n = 0; n < buffer_size; n++) {
+        if (buffer->ptr[n] == 1) {
+            op = buffer->buffer[n];
+            buffer->ptr[n] = 0;
+            break;
         }
     }
+    op * = -1; //op->id = -1;
+}
+
 }
 
 /* Função que lê uma operação de um buffer circular, se houver alguma
@@ -131,10 +132,10 @@ void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, s
 * afeta op->id com o valor -1.
 */
 void read_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
-    while (true) {
-        while (buffer->in == buffer->out);
-        op = buffer->buffer[buffer->out];
-        buffer->out = (buffer->out + 1) % buffer_size;
+    if (buffer->in == buffer->out) {
+        op->id = -1;
     }
+    op = buffer->buffer[buffer->out];
+    buffer->out = (buffer->out + 1) % buffer_size;
 }
 
