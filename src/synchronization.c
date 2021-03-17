@@ -39,7 +39,7 @@ void semaphore_destroy(char *name, sem_t *semaphore) {
 /* Função que inicia o processo de produzir, fazendo sem_wait nos semáforos
 * corretos da estrutura passada em argumento.
 */
-void produce_begin(prodcons *pc) {
+void produce_begin(struct prodcons *pc) {
     sem_wait(pc->empty);
     sem_wait(pc->mutex);
 }
@@ -47,7 +47,7 @@ void produce_begin(prodcons *pc) {
 /* Função que termina o processo de produzir, fazendo sem_post nos semáforos
 * corretos da estrutura passada em argumento.
 */
-void produce_end( prodcons *pc) {
+void produce_end( struct prodcons *pc) {
     sem_post(pc->mutex);
     sem_post(pc->full);
 }
