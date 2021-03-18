@@ -7,27 +7,33 @@
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
-    switch (process_code) {
-        case 0:
-            fork();
-            exit(execute_client(process_code, *buffers, *data, *sems));
-            return getpid();
-            break;
 
-        case 1:
-            fork();
-            exit(execute_proxy(process_code, *buffers, *data, *sems));
-            return getpid();
-            break;
+    int pid;
+    int value;
+    if ((pid = fork()) == -1) { //houve um erro
+        perror(argv[0]);
+        exit(1);
+    }
 
-        case 2:
-            fork();
-            exit(execute_server(process_code, *buffers, *data, *sems));
-            return getpid();
-            break;
 
-        default:
-            break;
+    if (pid == 0) { //fork funcionou e este processo é o filho
+        /* Processo filho */
+        if (process_code == 0) {
+            value = execute_client( /*nao sei se é isto*/process_id, buffers, data, sems);
+            exit(value);
+        } else if (process_code == 1) {
+            value = execute_proxy( /*nao sei se é isto*/ process_id, buffers, data, sems);
+            exit(value);
+        } else if (process_code == 2) {
+            value = execute_server(/*nao sei se é isto*/ process_id, buffers, data, sems);
+            exit(value);
+
+        } else {
+            //erro
+        }
+    } else { //fork funcionou e este processo é o pai
+        /* Processo pai */
+        return pid;
     }
 }
 
@@ -36,7 +42,14 @@ int launch_process(int process_id, int process_code, struct communication_buffer
 * Devolve o retorno do processo, se este tiver terminado normalmente.
 */
 int wait_process(int process_id) {
-    // ?
+    int status;
+    waitpid(process_id, &status);
+
+    if (status == -1) {
+        //erro + exit
+    }
+
+    return satus;
 }
 
 #endif
