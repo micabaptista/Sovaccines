@@ -1,6 +1,3 @@
-#ifndef PROXY_H_GUARD
-#define PROXY_H_GUARD
-
 #include "memory.h"
 #include "main.h"
 #include <stdbool.h>
@@ -32,9 +29,6 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
         }
     }
 }
-
-}
-
 
 /* Função que lê uma operação do buffer de memória partilhada entre
 * clientes e proxies, efetuando a necessária sincronização antes e
@@ -70,7 +64,6 @@ void proxy_process_operation(struct operation *op, int server_id, int *counter){
 */
 void proxy_forward_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                              struct semaphores *sems){
-
     produce_begin(sems.prx_srv);
     write_rnd_access_buffer(buffers.prx_srv, sizeof(buffers.prx_srv), op);
     produce_end(sems.prx_srv);
