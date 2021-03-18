@@ -14,11 +14,11 @@
 void user_interaction(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems) {
     ;
     
-    #define SIZE  ( floor(log10(abs(data->max_ops))) + 1)
+    
 
 
     //mudar com ifa dependendo do tamanho dos int;
-    char msg[ 5 + SIZE];
+    char msg[4];
     
     int numbers;
     
@@ -28,6 +28,7 @@ void user_interaction(struct communication_buffers* buffers, struct main_data* d
     printf("        read x - consultar o estado do pedido x.\n");       
     printf("        stop - termina a execução do sovaccines.\n");
     printf("        help - imprime informação sobre as ações disponíveis.\n") ;
+   
     while (strcmp(msg,"stop") == 0){
 
        
@@ -41,18 +42,11 @@ void user_interaction(struct communication_buffers* buffers, struct main_data* d
     }
     else if (strcmp(msg,"read") == 0 )
     {
-        scanf("%s", &msg);
-
         
-        if ( isdiatoigit(sizeof(msg)/sizeof(char), msg)) {
-            //falta verificar se o numero é um processo corrente  acho que no historico do data
-             //falta coisas
-            numbers = atoi(word);
             read_answer(data, sems);
-        }else
-        {
-            printf("erro nao é numero")
-        }
+       
+        
+       
         
         
     } 
