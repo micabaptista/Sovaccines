@@ -34,7 +34,7 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
             client_process_operation(op, client_id, data->client_stats);
         }
         if (op->id == 1 && data->terminate == 1) {
-            return sizeof(ata->results.length);
+            return sizeof(data->results.length);
         }
     }
 }
@@ -49,9 +49,7 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
 void client_get_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                           struct semaphores *sems) {
 
-    data->
-
-            consume_begin(sems.main_cli);
+    consume_begin(sems.main_cli);
     if (data->terminate == 1) {
         return; //ou break;
     }
