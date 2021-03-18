@@ -56,8 +56,29 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
 * igual ao tamanho dos buffers de memória partilhada, e os *_mutex com valor
 * igual a 1. Para tal pode ser usada a função semaphore_create.
 */
+
 void create_semaphores(struct main_data *data, struct semaphores *sems) {
-    //TODO
+
+    //full
+    sems->main_cli->full = semaphore_create(STR_SEM_MAIN_CLI_FULL, 0);
+    sems->cli_prx->full = semaphore_create(STR_SEM_CLI_PRX_FULL, 0);
+    sems->prx_srv->full = semaphore_create(STR_SEM_PRX_SRV_FULL, 0);
+    sems->srv_cli->full = semaphore_create(STR_SEM_SRV_CLI_FULL, 0);
+
+    //empty
+    sems->main_cli->empty = semaphore_create(STR_SEM_MAIN_CLI_EMPTY, data->buffers_size);
+    sems->cli_prx->empty = semaphore_create(STR_SEM_CLI_PRX_EMPTY, data->buffers_size);
+    sems->prx_srv->empty = semaphore_create(STR_SEM_PRX_SRV_EMPTY, data->buffers_size);
+    sems->srv_cli->empty = semaphore_create(STR_SEM_SRV_CLI_EMPTY, data->buffers_size);
+
+    //mutex
+    sems->main_cli->mutex = semaphore_create(STR_SEM_MAIN_CLI_MUTEX, 1);
+    sems->cli_prx->mutex = semaphore_create(STR_SEM_CLI_PRX_MUTEX, 1);
+    sems->prx_srv->mutex = semaphore_create(STR_SEM_PRX_SRV_MUTEX, 1);
+    sems->srv_cli->mutex = semaphore_create(STR_SEM_SRV_CLI_MUTEX, 1);
+
+    //results
+    sems->results_mutex = semaphore_create(STR_SEM_RESULTS_MUTEX, 1);
 }
 
 /* Função que inicia os processos dos clientes, proxies e
@@ -196,7 +217,6 @@ void stop_execution(struct main_data *data, struct communication_buffers *buffer
 * máximo de processos que possam lá estar.
 */
 void wakeup_processes(struct main_data *data, struct semaphores *sems) {
-    //TODO
 }
 
 /* Função que espera que todos os processos previamente iniciados terminem,
@@ -204,7 +224,10 @@ void wakeup_processes(struct main_data *data, struct semaphores *sems) {
 * wait_process do process.h.
 */
 void wait_processes(struct main_data *data) {
-    //TODO
+    //acho que ta mal!
+    wait_process(data->client_pids);
+    wait_process(data->proxy_pids);
+    wait_process(data->server_pids);
 }
 
 
@@ -219,7 +242,9 @@ void write_statistics(struct main_data *data) {
 * reservados na estrutura data.
 */
 void destroy_dynamic_memory_buffers(struct main_data *data) {
-    //TODO
+    destroy_dynamic_memory(data->client_pids);
+    destroy_dynamic_memory(data->proxy_pids);
+    destroy_dynamic_memory(data->server_pids);
 }
 
 
@@ -227,12 +252,39 @@ void destroy_dynamic_memory_buffers(struct main_data *data) {
 * reservados nas estruturas data e buffers.
 */
 void destroy_shared_memory_buffers(struct main_data *data, struct communication_buffers *buffers) {
-    //TODO
+
+    destroy_shared_memory(STR_SHM_MAIN_CLI_BUFFER, buffers->main_cli, data->buffers_size);
+
+    destroy_shared_memory(STR_SHM_CLI_PRX_BUFFER, buffers->cli_prx, data->buffers_size);
+
+    destroy_shared_memory(STR_SHM_PRX_SRV_BUFFER, buffers->prx_srv, data->buffers_size);
+
+    destroy_shared_memory(STR_SHM_SRV_CLI_BUFFER, buffers->srv_cli, data->buffers_size);
+
 }
 
 /* Função que liberta todos os semáforos da estrutura semaphores.
 */
 void destroy_semaphores(struct semaphores *sems) {
-    //TODO
+    //full
+    semaphore_destroy(STR_SEM_MAIN_CLI_FULL, sems->main_cli->full);
+    semaphore_destroy(STR_SEM_CLI_PRX_FULL, sems->cli_prx->full);
+    semaphore_destroy(STR_SEM_PRX_SRV_FULL, sems->prx_srv->full);
+    semaphore_destroy(STR_SEM_SRV_CLI_FULL, sems->srv_cli->full);
+
+    //empty
+    semaphore_destroy(STR_SEM_MAIN_CLI_EMPTY, sems->main_cli->empty);
+    semaphore_destroy(STR_SEM_CLI_PRX_EMPTY, sems->cli_prx->empty);
+    semaphore_destroy(STR_SEM_PRX_SRV_EMPTY, sems->prx_srv->empty);
+    semaphore_destroy(STR_SEM_SRV_CLI_EMPTY, sems->srv_cli->empty);
+
+    //mutex
+    semaphore_destroy(STR_SEM_MAIN_CLI_MUTEX, sems->main_cli->mutex);
+    semaphore_destroy(STR_SEM_CLI_PRX_MUTEX, sems->cli_prx->mutex);
+    semaphore_destroy(STR_SEM_PRX_SRV_MUTEX, sems->prx_srv->mutex);
+    semaphore_destroy(STR_SEM_SRV_CLI_MUTEX, sems->srv_cli->mutex);
+
+    //results
+    semaphore_destroy(STR_SEM_RESULTS_MUTEX, sems->results_mutex);
 }
 
