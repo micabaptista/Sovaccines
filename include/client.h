@@ -34,6 +34,7 @@ void client_get_operation(struct operation* op, struct communication_buffers* bu
 void client_process_operation(struct operation* op, int cient_id, int* counter);
 
 
+
 /* Função que escreve uma operação no buffer de memória partilhada entre
 * clientes e proxies, efetuando a necessária sincronização antes e depois
 * de escrever.
