@@ -1,8 +1,6 @@
 # Sovaccines
 ## Sistemas Operativos
-Faculdade de Ciências da Universidade de Lisboa
+### Faculdade de Ciências da Universidade de Lisboa
 
-Michael Baptista
-Afonso Rosa
-Duarte Pinheiro
+Michael Baptista | Afonso Rosa | Duarte Pinheiro
     
