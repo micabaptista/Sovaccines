@@ -1,9 +1,13 @@
-#include "memory.h"
+#include "../include/client.h"
 #include <unistd.h>
-#include "main.h"
-#include "client.h"
-#include "proxy.h"
-#include "server.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include<unistd.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <string.h>
+
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
@@ -49,7 +53,5 @@ int wait_process(int process_id) {
         //erro + exit
     }
 
-    return satus;
+    return status;
 }
-
-#endif

@@ -6,6 +6,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
+#include "../include/synchronization.h"
 
 /* Função que cria um novo semáforo com nome name e valor inicial igual a
 * value. Pode concatenar o resultado da função getuid() a name, para tornar
@@ -40,32 +41,56 @@ void semaphore_destroy(char *name, sem_t *semaphore) {
 * corretos da estrutura passada em argumento.
 */
 void produce_begin(struct prodcons *pc) {
-    sem_wait(pc->empty);
-    sem_wait(pc->mutex);
+    if(sem_wait(pc->empty) == -1){
+        perror("sem wait");
+        return;
+    }
+    if(sem_wait(pc->mutex) == -1){
+        perror("sem wait");
+        return;
+    }
 }
 
 /* Função que termina o processo de produzir, fazendo sem_post nos semáforos
 * corretos da estrutura passada em argumento.
 */
 void produce_end( struct prodcons *pc) {
-    sem_post(pc->mutex);
-    sem_post(pc->full);
+    if(sem_wait(pc->mutex) == -1){
+        perror("sem wait");
+        return;
+    }
+    if(sem_wait(pc->full) == -1){
+        perror("sem wait");
+        return;
+    }
 }
 
 /* Função que inicia o processo de consumir, fazendo sem_wait nos semáforos
 * corretos da estrutura passada em argumento.
 */
 void consume_begin(struct prodcons *pc) {
-    sem_wait(pc->full);
-    sem_wait(pc->mutex);
+    if(sem_wait(pc->full) == -1){
+        perror("sem wait");
+        return;
+    }
+    if(sem_wait(pc->mutex) == -1){
+        perror("sem wait");
+        return;
+    }
 }
 
 /* Função que termina o processo de consumir, fazendo sem_post nos semáforos
 * corretos da estrutura passada em argumento.
 */
 void consume_end(struct prodcons *pc) {
-    sem_post(pc->mutex);
-    sem_post(pc->empty);
+    if(sem_wait(pc->mutex) == -1){
+        perror("sem wait");
+        return;
+    }
+    if(sem_wait(pc->empty) == -1){
+        perror("sem wait");
+        return;
+    }
 }
 
 /* Função que faz wait a um semáforo.

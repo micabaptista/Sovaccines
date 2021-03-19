@@ -1,15 +1,14 @@
 # possivel makefile inacabado
 OBJ_dir= obj
-OBJETOS =  memory.o main.o SOVACCINES.o client.o main.o memory.o process.o proxy.o server.o synchronization.o #memory-private.o
-SOVACCINES.o =
+OBJETOS =  memory.o synchronization.o client.o proxy.o server.o main.o
 client.o =
-main.o =z
+main.o =
 memory.o =
 process.o =
 proxy.o =
 server.o =
 synchronization.o =
-#memory-private.o
+memory-private.o =
 CC = gcc
 FLAGS = -lrt -I
 

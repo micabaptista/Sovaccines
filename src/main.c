@@ -1,8 +1,9 @@
-#ifndef MAIN_H_GUARD
-#define MAIN_H_GUARD
-
-#include "memory.h"
-#include "synchronization.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../include/main.h"
+#include "../include/memory.h"
+#include "../include/synchronization.h"
 
 /* Função que lê os argumentos da aplicação, nomeadamente o número
 * máximo de operações, o tamanho dos buffers de memória partilhada
@@ -16,11 +17,11 @@ void main_args(int argc, char *argv[], struct main_data *data) {
 
     } else {
 
-        data->max_ops = atoi(*argv[1]);
-        data->buffers_size = atoi(*argv[2]);
-        data->n_clients = atoi(*argv[3]);
-        data->n_proxies = atoi(*argv[4]);
-        data->n_servers = atoi(*argv[5]);
+        data->max_ops = atoi(argv[1]);
+        data->buffers_size = atoi(argv[2]);
+        data->n_clients = atoi(argv[3]);
+        data->n_proxies = atoi(argv[4]);
+        data->n_servers = atoi(argv[5]);
 
     }
 }
@@ -46,9 +47,20 @@ void create_dynamic_memory_buffers(struct main_data *data) {
 * Para tal, pode ser usada a função create_shared_memory do memory.h.
 */
 void create_shared_memory_buffers(struct main_data *data, struct communication_buffers *buffers) {
-    //acjo que falta um for para os buffers
-    //FALTAFAZER
-    buffers->main_cli = create_shared_memory()
+    //random
+    buffers->main_cli->ptr = create_shared_memory(STR_SHM_MAIN_CLI_PTR, data->buffers_size);
+    buffers->main_cli->buffer = create_shared_memory(STR_SHM_MAIN_CLI_BUFFER, data->buffers_size);
+    //circular
+    buffers->cli_prx->buffer = create_shared_memory(STR_SHM_CLI_PRX_BUFFER, data->buffers_size);
+    //random
+    buffers->prx_srv->ptr = create_shared_memory(STR_SHM_PRX_SRV_PTR, data->buffers_size);
+    buffers->prx_srv->buffer = create_shared_memory(STR_SHM_PRX_SRV_BUFFER, data->buffers_size);
+    //circular
+    buffers->srv_cli->buffer = create_shared_memory(STR_SHM_SRV_CLI_BUFFER, data->buffers_size);
+
+    //outros
+    data->results = create_shared_memory(STR_SHM_RESULTS,data->buffers_size);
+    data->terminate = create_shared_memory(STR_SHM_TERMINATE,data->buffers_size);
 }
 
 /* Função que inicializa os semáforos da estrutura semaphores. Semáforos
@@ -116,8 +128,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
         scanf("%s", &msg);
 
 
-        if (strcmp(msg, "op") == 0  // && falta ver)
-        {
+        if (strcmp(msg, "op") == 0  ){// && falta ver)
             create_request( /*nao sei o que por aqui*/, buffers, data, sems);
         } else if (strcmp(msg, "read") == 0) {
 
@@ -186,7 +197,7 @@ void read_answer(struct main_data *data, struct semaphores *sems) {
     scanf("%s", &msg);
 
 
-    if (isdiatoigit(sizeof(msg) / sizeof(char), msg)) {
+    if (isDigit(sizeof(msg) / sizeof(char), msg)) {
 
         number = atoi(msg);
         //falta fazer

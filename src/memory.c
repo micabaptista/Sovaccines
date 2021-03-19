@@ -5,7 +5,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
-
+#include "../include/memory-private.h"
 
 /* Função que reserva uma zona de memória partilhada com tamanho indicado
 * por size e nome name, preenche essa zona de memória com o valor 0, e
@@ -84,7 +84,8 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
     int n;
     for (n = 0; n < buffer_size; n++) {
         if (buffer->ptr[n] == 0) {
-            buffer->buffer[n] = op;
+
+            buffer->buffer = op;
             buffer->ptr[n] = 1;
             break;
         }
@@ -98,8 +99,8 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
 */
 void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
     for (int i = 0; i < buffer_size; ++i) {
-        if ((((in + 1) % BUFFER_SIZE) != out)) {
-            buffer->buffer[buffer->in] = op;
+        if ((((buffer->in + 1) % buffer_size) != buffer->out)) {
+            buffer->buffer = op;
             buffer->in = (buffer->in + 1) % buffer_size;
             break;
         }
@@ -116,15 +117,14 @@ void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, s
     int n;
     for (n = 0; n < buffer_size; n++) {
         if (buffer->ptr[n] == 1) {
-            op = buffer->buffer[n];
+            op = buffer->buffer;
             buffer->ptr[n] = 0;
             break;
         }
     }
-    op * = -1; //op->id = -1;
+    op->id = -1;
 }
 
-}
 
 /* Função que lê uma operação de um buffer circular, se houver alguma
 * disponível para ler. A leitura deve ser feita segundo as regras de
@@ -135,7 +135,7 @@ void read_circular_buffer(struct circular_buffer *buffer, int buffer_size, struc
     if (buffer->in == buffer->out) {
         op->id = -1;
     }
-    op = buffer->buffer[buffer->out];
+    op = buffer->buffer;
     buffer->out = (buffer->out + 1) % buffer_size;
 }
 
