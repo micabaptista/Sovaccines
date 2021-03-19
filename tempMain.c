@@ -18,10 +18,24 @@ struct operation {
     int client;        //id do cliente que a recebeu
     int proxy;        //id do proxy que a encaminhou
     int server;        //id do server que a serviu
+    int array [2];
+
 };
 
-void client_get_operation(struct operation *sems) {
+void write_rnd_access_buffer(struct operation *buffer, int buffer_size, struct operation *op) {
+    int n;
+    for (n = 0; n < buffer_size; n++) {
+        if (buffer->array[n] == 0) {
 
+            buffer->array[n] = op;
+            buffer->array[n] = 1;
+            break;
+        }
+    }
+}
+
+void client_get_operation(struct operation *sems) {
+    sems->array[0];
     sems->client=2;
     printf("%d",sems->client);
 }
@@ -30,6 +44,6 @@ void client_get_operation(struct operation *sems) {
 int main(int argc, char *argv[]) {
     struct operation operation;
     client_get_operation(&operation);
-
+    operation.array[0];
     return 0;
 }
