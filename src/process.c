@@ -1,4 +1,6 @@
 #include "../include/client.h"
+#include "../include/server.h"
+#include "../include/proxy.h"
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -7,6 +9,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+
+
+
 
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
@@ -14,8 +20,8 @@ int launch_process(int process_id, int process_code, struct communication_buffer
 
     int pid;
     int value;
-    if ((pid = fork()) == -1) { //houve um erro
-        perror(argv[0]);
+    if ((pid = fork()) == -1) {
+        perror("fork-launcher");
         exit(1);
     }
 
@@ -23,20 +29,16 @@ int launch_process(int process_id, int process_code, struct communication_buffer
     if (pid == 0) { //fork funcionou e este processo é o filho
         /* Processo filho */
         if (process_code == 0) {
-            value = execute_client( /*nao sei se é isto*/process_id, buffers, data, sems);
+            value = execute_client(process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 1) {
-            value = execute_proxy( /*nao sei se é isto*/ process_id, buffers, data, sems);
+            value = execute_proxy( process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 2) {
-            value = execute_server(/*nao sei se é isto*/ process_id, buffers, data, sems);
+            value = execute_server( process_id, buffers, data, sems);
             exit(value);
-
-        } else {
-            //erro
         }
-    } else { //fork funcionou e este processo é o pai
-        /* Processo pai */
+    } else {
         return pid;
     }
 }
@@ -47,11 +49,11 @@ int launch_process(int process_id, int process_code, struct communication_buffer
 */
 int wait_process(int process_id) {
     int status;
-    waitpid(process_id, &status);
+    waitpid(process_id, &status,0);
 
     if (status == -1) {
-        //erro + exit
+        perror("wait-process-launhcer");
+        exit(1);
     }
-
     return status;
 }

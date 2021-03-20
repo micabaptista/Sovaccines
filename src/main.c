@@ -114,7 +114,6 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
 
     int numbers;
 
-
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");
