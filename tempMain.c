@@ -12,38 +12,39 @@
 #include <errno.h>
 
 
+
 struct operation {
     int id;        //id da operação
     char status;    //estado da operação. Pode ser 'C', 'P', 'S'
     int client;        //id do cliente que a recebeu
     int proxy;        //id do proxy que a encaminhou
     int server;        //id do server que a serviu
-    int array [2];
-
 };
 
-void write_rnd_access_buffer(struct operation *buffer, int buffer_size, struct operation *op) {
-    int n;
-    for (n = 0; n < buffer_size; n++) {
-        if (buffer->array[n] == 0) {
-
-            buffer->array[n] = op;
-            buffer->array[n] = 1;
-            break;
+struct operation getOperation (int id,struct operation *results){
+    while ( results != NULL){
+        if(results->id == id){
+            return *results;
         }
+        results++;
     }
 }
 
-void client_get_operation(struct operation *sems) {
-    sems->array[0];
-    sems->client=2;
-    printf("%d",sems->client);
-}
 
 
 int main(int argc, char *argv[]) {
-    struct operation operation;
-    client_get_operation(&operation);
-    operation.array[0];
+
+
+    struct operation results [] = {
+            {0,'S',0,0,0},
+            {1,'K',1,1,1},
+            {2,'S',2,2,2}
+    };
+
+    struct operation a = getOperation(1,results);
+    printf("%c",a.status);
+    // get operação que teve o id = number
+
+    // percorrer data->results ( ou seja percorrer um array de strucsts e devolver aquela cujo id = number)
     return 0;
 }

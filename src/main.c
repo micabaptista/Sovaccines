@@ -4,6 +4,10 @@
 #include "../include/main.h"
 #include "../include/memory.h"
 #include "../include/synchronization.h"
+#include  <ctype.h>
+#include <math.h>
+#include <semaphore.h>
+#include "../include/process.h"
 
 /* Função que lê os argumentos da aplicação, nomeadamente o número
 * máximo de operações, o tamanho dos buffers de memória partilhada
@@ -59,8 +63,8 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
     buffers->srv_cli->buffer = create_shared_memory(STR_SHM_SRV_CLI_BUFFER, data->buffers_size);
 
     //outros
-    data->results = create_shared_memory(STR_SHM_RESULTS,data->buffers_size);
-    data->terminate = create_shared_memory(STR_SHM_TERMINATE,data->buffers_size);
+    data->results = create_shared_memory(STR_SHM_RESULTS, data->buffers_size);
+    data->terminate = create_shared_memory(STR_SHM_TERMINATE, data->buffers_size);
 }
 
 /* Função que inicializa os semáforos da estrutura semaphores. Semáforos
@@ -99,7 +103,13 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
 * da estrutura data.
 */
 void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
-    //TODO
+    int processPid;
+    launch_process(processPid,0,buffers,data,sems);
+    data->client_stats = &processPid;
+    launch_process(processPid,1,buffers,data,sems);
+    data->client_stats = &processPid;
+    launch_process(processPid,2,buffers,data,sems);
+    data->client_stats = &processPid;
 }
 
 /* Função que faz interação do utilizador com o sistema, podendo receber 4 comandos:
@@ -124,11 +134,11 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
 
 
         printf(" Introduzir ação:\n");
-        scanf("%s", &msg);
+        scanf("%s", msg);
 
 
-        if (strcmp(msg, "op") == 0  ){// && falta ver)
-            create_request( /*nao sei o que por aqui*/, buffers, data, sems);
+        if (strcmp(msg, "op") == 0) {// && falta ver)
+            create_request(data->client_stats, buffers, data, sems);
         } else if (strcmp(msg, "read") == 0) {
 
             read_answer(data, sems);
@@ -136,7 +146,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
 
         } else if (strcmp(msg, "stop") == 0) {
             stop_execution(data, buffers, sems);
-        } else if (strcmp(msg, "help" == 0)) {
+        } else if (strcmp(msg, "help") == 0) {
             printf("Ações disponíveis: \n");
             printf("        op - criar um pedido de aquisição de vacinas.\n");
             printf("        read x - consultar o estado do pedido x.\n");
@@ -145,8 +155,6 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
         } else {
             printf("acçao nao reconhecida");
         }
-
-
     }
 }
 
@@ -168,19 +176,27 @@ int isDigit(int length, char num[]) {
 */
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
                     struct semaphores *sems) {
-    if (op_counter < data->max_ops) {
-        struct operation op = {op_counter, '', 0, 0, 0};
+    if (*op_counter < data->max_ops) {
+        struct operation op = {*op_counter, ' ', 0, 0, 0};
 
         //si*nc
-        void write_rnd_access_buffer(buffers->main_cli, data->buffers_size, op);
+        write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
 
         //sinc
-        print("%d", op_counter);
+        printf("%d", *op_counter);
 
-        *op_counter++;
+        *op_counter = *op_counter + 1;
     }
 }
-
+struct operation getOperation (int id,struct operation *results){
+    while ( results != NULL){
+        if(results->id == id){
+            return *results;
+        }
+        results++;
+    }
+    printf("Op %d ainda não é válido!", id);
+}
 /* Função que lê um id de operação do utilizador e verifica se a mesma
 * é valida e se já foi respondida por um servidor. Em caso afirmativo,
 * imprime informação da mesma, nomeadamente o seu estado, e os ids do 
@@ -189,21 +205,29 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
 * respetivos.
 */
 void read_answer(struct main_data *data, struct semaphores *sems) {
-#define SIZE  ( floor(log10(abs(data->max_ops))) + 1);
+// #define SIZE  (floor(log10(abs(data->max_ops))) + 1)  não entendi o que querias com isto
 
-    char msg[SIZE];
+    char msg[data->max_ops];
     int number;
-    scanf("%s", &msg);
 
+    scanf("%s", msg);
 
     if (isDigit(sizeof(msg) / sizeof(char), msg)) {
-
         number = atoi(msg);
-        //falta fazer
+
+        semaphore_mutex_lock(sems->results_mutex);
+        struct operation operation = getOperation(number,data->results);
+        semaphore_mutex_unlock(sems->results_mutex);
+
+
+        printf("Op %d com estado %c foi recebida pelo cliente %d, encaminhada pelo proxy %d, ""e tratada pelo servidor %d!",
+               operation.id,operation.status,operation.client,operation.proxy,operation.server);
+
     } else {
-        printf("not a number");
+            printf("id de operação fornecido é inválido!");
     }
 }
+
 
 /* Função que termina a execução do programa sovaccines. Deve começar por
 * afetar a flag data->terminate com o valor 1. De seguida, e por esta
@@ -213,11 +237,13 @@ void read_answer(struct main_data *data, struct semaphores *sems) {
 *reservadas. Para tal, pode usar as outras funções auxiliares do main.h.
 */
 void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems) {
-    data->terminate = 1;
+    *data->terminate = 1;
     wakeup_processes(data, sems);
-    // nao entendio a parte de esperar talvez um fork e wait
-    //escrever estatisticas
-    //libertar semaforos e zonas de moria partilhada e dinamica
+    wait_processes(data);
+    write_statistics(data);
+    destroy_semaphores(sems);
+    destroy_shared_memory_buffers(data,buffers);
+    destroy_dynamic_memory_buffers(data);
 }
 
 /* Função que acorda todos os processos adormecidos em semáforos, para que
@@ -227,6 +253,34 @@ void stop_execution(struct main_data *data, struct communication_buffers *buffer
 * máximo de processos que possam lá estar.
 */
 void wakeup_processes(struct main_data *data, struct semaphores *sems) {
+    // se o VALOR DO sems.mutex for maior que 0 então é pq tem processos ainda por ler.
+    //mutex pergunta se agluem esta a aceder
+    int *value;
+
+    //main_cli
+    sem_getvalue(sems->main_cli->mutex,value);
+    while (*value > 0){
+        consume_end(sems->main_cli);
+        sem_getvalue(sems->main_cli->mutex,value);
+    }
+    //cli_prx
+    sem_getvalue(sems->cli_prx->mutex,value);
+    while (*value > 0){
+        consume_end(sems->cli_prx);
+        sem_getvalue(sems->cli_prx->mutex,value);
+    }
+    //prx_srv
+    sem_getvalue(sems->prx_srv->mutex,value);
+    while (*value > 0){
+        consume_end(sems->prx_srv);
+        sem_getvalue(sems->prx_srv->mutex,value);
+    }
+    //srv_cli
+    sem_getvalue(sems->srv_cli->mutex,value);
+    while (*value > 0){
+        consume_end(sems->srv_cli);
+        sem_getvalue(sems->srv_cli->mutex,value);
+    }
 }
 
 /* Função que espera que todos os processos previamente iniciados terminem,
@@ -234,10 +288,9 @@ void wakeup_processes(struct main_data *data, struct semaphores *sems) {
 * wait_process do process.h.
 */
 void wait_processes(struct main_data *data) {
-    //acho que ta mal!
-    wait_process(data->client_pids);
-    wait_process(data->proxy_pids);
-    wait_process(data->server_pids);
+    wait_process(*data->client_pids);
+    wait_process(*data->proxy_pids);
+    wait_process(*data->server_pids);
 }
 
 
@@ -245,7 +298,24 @@ void wait_processes(struct main_data *data) {
 * operações foram processadas por cada cliente, proxy e servidor.
 */
 void write_statistics(struct main_data *data) {
-    //TODO
+    int process_id;
+
+    for (size_t i = 0; i < data-> n_clients; i++){
+        process_id = *(data->client_pids + i);
+        printf("o cliente %d tratou de  %d processo", process_id , (data->client_stats[process_id]));
+    }
+
+    for (size_t i = 0; i < data-> n_proxies; i++)
+    {
+        process_id = *(data->proxy_pids + i);
+        printf("o cliente %d tratou de  %d processo", process_id , (data->proxy_stats[process_id]));
+
+    }
+
+    for (size_t i = 0; i < data-> n_servers; i++){
+        process_id = *(data->server_pids + i);
+        printf("o cliente %d tratou de  %d processo", process_id , (data->server_stats[process_id]));
+    }
 }
 
 /* Função que liberta todos os buffers de memória dinâmica previamente
