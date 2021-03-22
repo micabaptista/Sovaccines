@@ -13,11 +13,11 @@
 * getuid() a name, para tornar o nome único para o processo.
 */
 void *create_shared_memory(char *name, int size) {
-
     char id = getuid();
     char copy[strlen(name)]; // declarar uma string do msm tamanho do name
     strcpy(copy, name);      // copiar a string que vem do pointer name para a variavel copy
     strcat(copy, &id);   // concatenar o id gerado com o nome passado por argumento.
+
     int *ptr;
     int ret;
     int fd = shm_open(copy, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
@@ -84,7 +84,6 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
     int n;
     for (n = 0; n < buffer_size; n++) {
         if (buffer->ptr[n] == 0) {
-
             buffer->buffer = op;
             buffer->ptr[n] = 1;
             break;

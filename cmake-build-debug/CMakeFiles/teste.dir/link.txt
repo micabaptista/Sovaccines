@@ -1,0 +1,1 @@
+/usr/bin/cc -pthread -lrt -I -g -g   -lpthread -lrt CMakeFiles/teste.dir/src/sovacinnes.c.o CMakeFiles/teste.dir/src/main.c.o CMakeFiles/teste.dir/src/client.c.o CMakeFiles/teste.dir/src/memory.c.o CMakeFiles/teste.dir/src/process.c.o CMakeFiles/teste.dir/src/proxy.c.o CMakeFiles/teste.dir/src/server.c.o CMakeFiles/teste.dir/src/synchronization.c.o  -o teste 

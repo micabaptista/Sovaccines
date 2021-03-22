@@ -20,8 +20,8 @@ sem_t *semaphore_create(char *name, int value) {
 
     sem_t *sem = sem_open(newName, O_CREAT, 0xFFFFFFFF, value);
     if (sem == SEM_FAILED) {
-        perror(newName);
-        exit(6);
+        perror("Não consegui criar o semaforo pretendido");
+        return NULL;
     }
     return sem;
 }
@@ -41,13 +41,14 @@ void semaphore_destroy(char *name, sem_t *semaphore) {
 * corretos da estrutura passada em argumento.
 */
 void produce_begin(struct prodcons *pc) {
+    printf("ola");
     if(sem_wait(pc->empty) == -1){
         perror("sem wait");
-        return;
+        exit(1);
     }
     if(sem_wait(pc->mutex) == -1){
         perror("sem wait");
-        return;
+        exit(1);
     }
 }
 
@@ -55,13 +56,13 @@ void produce_begin(struct prodcons *pc) {
 * corretos da estrutura passada em argumento.
 */
 void produce_end( struct prodcons *pc) {
-    if(sem_wait(pc->mutex) == -1){
-        perror("sem wait");
-        return;
+    if(sem_post(pc->mutex) == -1){
+        perror("sem post");
+        exit(1);
     }
-    if(sem_wait(pc->full) == -1){
-        perror("sem wait");
-        return;
+    if(sem_post(pc->full) == -1){
+        perror("sem post");
+        exit(1);
     }
 }
 
@@ -83,12 +84,12 @@ void consume_begin(struct prodcons *pc) {
 * corretos da estrutura passada em argumento.
 */
 void consume_end(struct prodcons *pc) {
-    if(sem_wait(pc->mutex) == -1){
-        perror("sem wait");
+    if(sem_post(pc->mutex) == -1){
+        perror("sem post");
         return;
     }
-    if(sem_wait(pc->empty) == -1){
-        perror("sem wait");
+    if(sem_post(pc->empty) == -1){
+        perror("sem post");
         return;
     }
 }
