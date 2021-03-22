@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="teste"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="teste">
+				<Option output="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/teste" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 teste"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="teste/fast">
+				<Option output="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/teste" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/aluno-di/Desktop/Sovaccines/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 teste/fast"/>
+					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j2 -f &quot;/home/aluno-di/Desktop/Sovaccines/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/client.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/main.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/memory.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/process.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/proxy.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/server.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/sovacinnes.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/src/synchronization.c">
+			<Option target="teste"/>
+		</Unit>
+		<Unit filename="/home/aluno-di/Desktop/Sovaccines/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

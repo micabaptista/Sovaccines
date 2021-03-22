@@ -8,6 +8,7 @@
 #include <math.h>
 #include <semaphore.h>
 #include "../include/process.h"
+#include  <stdbool.h>
 
 /* Função que lê os argumentos da aplicação, nomeadamente o número
 * máximo de operações, o tamanho dos buffers de memória partilhada
@@ -17,7 +18,8 @@
 */
 void main_args(int argc, char *argv[], struct main_data *data) {
     if (argc != 6) {
-        printf("Uso: sovaccines max_ops buffers_size n_clients n_proxies n_servers\nExemplo: ./bin/sovaccines 10 10 1 1 1");
+        printf("Uso: sovaccines max_ops buffers_size n_clients n_proxies n_servers\n"
+               "Exemplo: ./bin/sovaccines 10 10 1 1 1\n$$$");
 
     } else {
 
@@ -26,7 +28,6 @@ void main_args(int argc, char *argv[], struct main_data *data) {
         data->n_clients = atoi(argv[3]);
         data->n_proxies = atoi(argv[4]);
         data->n_servers = atoi(argv[5]);
-
     }
 }
 
@@ -35,9 +36,9 @@ void main_args(int argc, char *argv[], struct main_data *data) {
 * main_data. Para tal, pode ser usada a função create_dynamic_memory do memory.h.
 */
 void create_dynamic_memory_buffers(struct main_data *data) {
-    data->client_pids = create_dynamic_memory(data->n_clients * sizeof(int));
-    data->proxy_pids = create_dynamic_memory(data->n_proxies * sizeof(int));
-    data->server_pids = create_dynamic_memory(data->n_servers * sizeof(int));
+    data->client_pids = create_dynamic_memory(data->max_ops * sizeof(int));
+    data->proxy_pids = create_dynamic_memory(data->max_ops * sizeof(int));
+    data->server_pids = create_dynamic_memory(data->max_ops * sizeof(int));
 
     data->client_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->proxy_stats = create_dynamic_memory(data->max_ops * sizeof(int));
@@ -105,11 +106,11 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
 void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     int processPid;
     launch_process(processPid,0,buffers,data,sems);
-    data->client_stats = &processPid;
+    data->client_pids = &processPid;
     launch_process(processPid,1,buffers,data,sems);
-    data->client_stats = &processPid;
+    data->client_pids = &processPid;
     launch_process(processPid,2,buffers,data,sems);
-    data->client_stats = &processPid;
+    data->client_pids = &processPid;
 }
 
 /* Função que faz interação do utilizador com o sistema, podendo receber 4 comandos:
@@ -122,7 +123,6 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
     //mudar com ifa dependendo do tamanho dos int;
     char msg[4];
 
-    int numbers;
 
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
@@ -130,22 +130,19 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
     printf("        stop - termina a execução do sovaccines.\n");
     printf("        help - imprime informação sobre as ações disponíveis.\n");
 
-    while (strcmp(msg, "stop") == 0) {
+    while (true) { // == 0 ???
 
 
-        printf(" Introduzir ação:\n");
+        printf("Introduzir ação:\n");
         scanf("%s", msg);
 
-
-        if (strcmp(msg, "op") == 0) {// && falta ver)
+        if (strcmp(msg, "op") == 0) {
             create_request(data->client_stats, buffers, data, sems);
         } else if (strcmp(msg, "read") == 0) {
-
             read_answer(data, sems);
-
-
         } else if (strcmp(msg, "stop") == 0) {
             stop_execution(data, buffers, sems);
+            break;
         } else if (strcmp(msg, "help") == 0) {
             printf("Ações disponíveis: \n");
             printf("        op - criar um pedido de aquisição de vacinas.\n");
@@ -153,7 +150,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             printf("        stop - termina a execução do sovaccines.\n");
             printf("        help - imprime informação sobre as ações disponíveis.\n");
         } else {
-            printf("acçao nao reconhecida");
+            printf("Ação não reconhecida, insira 'help' para assistência.\n");
         }
     }
 }
@@ -176,17 +173,27 @@ int isDigit(int length, char num[]) {
 */
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
                     struct semaphores *sems) {
+
     if (*op_counter < data->max_ops) {
         struct operation op = {*op_counter, ' ', 0, 0, 0};
 
+        printf("O pedido #%d foi criado!\n"
+               "Pedido #%d concluído! É agora possível consultar!\n", *data->client_stats,*data->client_stats);
         //si*nc
+
+        produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
+        produce_end(sems->main_cli);
+
 
         //sinc
-        printf("%d", *op_counter);
 
         *op_counter = *op_counter + 1;
+    }else{
+
+        printf("O número máximo de pedidos foi alcançado!\n");
     }
+
 }
 struct operation getOperation (int id,struct operation *results){
     while ( results != NULL){
@@ -215,9 +222,9 @@ void read_answer(struct main_data *data, struct semaphores *sems) {
     if (isDigit(sizeof(msg) / sizeof(char), msg)) {
         number = atoi(msg);
 
-        semaphore_mutex_lock(sems->results_mutex);
+        //semaphore_mutex_lock(sems->results_mutex);
         struct operation operation = getOperation(number,data->results);
-        semaphore_mutex_unlock(sems->results_mutex);
+        //semaphore_mutex_unlock(sems->results_mutex);
 
 
         printf("Op %d com estado %c foi recebida pelo cliente %d, encaminhada pelo proxy %d, ""e tratada pelo servidor %d!",
