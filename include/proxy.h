@@ -29,7 +29,7 @@ void proxy_receive_operation(struct operation* op, struct communication_buffers*
 * passado como argumento, alterando o estado da mesma para 'P' (proxied), e 
 * incrementando o contador de operações.
 */
-void proxy_process_operation(struct operation* op, int server_id, int* counter);
+void proxy_process_operation(struct operation* op, int proxy_id, int* counter);
 
 
 /* Função que escreve uma operação no buffer de memória partilhada entre

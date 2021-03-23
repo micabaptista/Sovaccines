@@ -1,6 +1,12 @@
+#include "../include/main.h"
 #include "../include/client.h"
-#include "../include/server.h"
+#include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
 #include "../include/proxy.h"
+#include "../include/server.h"
+#include "../include/synchronization.h"
+
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -11,10 +17,6 @@
 #include <string.h>
 #include <sys/wait.h>
 
-
-
-
-
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
 
@@ -24,8 +26,6 @@ int launch_process(int process_id, int process_code, struct communication_buffer
         perror("fork-launcher");
         exit(1);
     }
-
-
     if (pid == 0) { //fork funcionou e este processo é o filho
         /* Processo filho */
         if (process_code == 0) {

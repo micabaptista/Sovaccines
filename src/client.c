@@ -1,21 +1,19 @@
-#include <stdbool.h>
-#include <stdio.h>
+#include "../include/client.h"
+#include "../include/main.h"
 #include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
+#include "../include/proxy.h"
+#include "../include/server.h"
 #include "../include/synchronization.h"
 
-void client_get_operation(struct operation* op, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
-
-void client_process_operation(struct operation* op, int cient_id, int* counter);
-
-void client_send_operation(struct operation* op, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
-
-void client_receive_answer(struct operation* op, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
-
-void client_process_answer(struct operation* op, struct main_data* data, struct semaphores* sems);
+#include <stdbool.h>
+#include <stdio.h>
 
 int
 execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     while (true) {
+        printf("dasda\n");
 
         //1.
         struct operation op;
@@ -29,7 +27,7 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
         if (op.id != -1 && data->terminate == 0) {
             client_process_operation(&op, client_id, data->client_stats);
         }
-        if (op.id == 1 && data->terminate == 1) {
+        if (op.id == 1 && *data->terminate == 1) {
             return sizeof(data->results);
         }
     }
@@ -46,7 +44,7 @@ void client_get_operation(struct operation *op, struct communication_buffers *bu
                           struct semaphores *sems) {
 
     consume_begin(sems->main_cli);
-    if (data->terminate == 1) {
+    if (*data->terminate == 1) {
         return; //ou break;
     }
     read_rnd_access_buffer(buffers->main_cli, sizeof(buffers->main_cli), op);
@@ -88,7 +86,7 @@ void client_send_operation(struct operation *op, struct communication_buffers *b
 void client_receive_answer(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                            struct semaphores *sems) {
     consume_begin(sems->srv_cli);
-    if (data->terminate == 1) {
+    if (*data->terminate == 1) {
         return; //ou break;
     }
     read_circular_buffer(buffers->srv_cli, sizeof(buffers->srv_cli), op);

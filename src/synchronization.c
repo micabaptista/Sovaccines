@@ -1,4 +1,12 @@
-#include <semaphore.h>
+#include "../include/main.h"
+#include "../include/client.h"
+#include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
+#include "../include/proxy.h"
+#include "../include/server.h"
+#include "../include/synchronization.h"
+
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -6,7 +14,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
-#include "../include/synchronization.h"
 
 /* Função que cria um novo semáforo com nome name e valor inicial igual a
 * value. Pode concatenar o resultado da função getuid() a name, para tornar

@@ -1,12 +1,13 @@
-#include "../include/memory.h"
 #include "../include/main.h"
+#include "../include/client.h"
+#include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
+#include "../include/proxy.h"
+#include "../include/server.h"
+#include "../include/synchronization.h"
+
 #include <stdbool.h>
-
-void server_receive_operation(struct operation* op, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
-
-void server_process_operation(struct operation* op, int proxy_id, int* counter);
-
-void server_send_answer(struct operation* op, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
 
 int
 execute_server(int server_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
@@ -20,7 +21,7 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
         //2.
         if (op.id == -1) {};
 
-        if (data->terminate == 1) {
+        if (*data->terminate == 1) {
             return sizeof(data->results);
         }
     }
@@ -37,7 +38,7 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
 void server_receive_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                               struct semaphores *sems) {
     consume_begin(sems->prx_srv);
-    if (data->terminate == 1) {
+    if (*data->terminate == 1) {
         return; //ou break;
     }
     read_rnd_access_buffer(buffers->prx_srv, sizeof(buffers->prx_srv), op);

@@ -1,3 +1,16 @@
+#include "../include/main.h"
+#include "../include/client.h"
+#include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
+#include "../include/proxy.h"
+#include "../include/server.h"
+#include "../include/synchronization.h"
+
+
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -5,7 +18,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
-#include "../include/memory-private.h"
 
 /* Função que reserva uma zona de memória partilhada com tamanho indicado
 * por size e nome name, preenche essa zona de memória com o valor 0, e

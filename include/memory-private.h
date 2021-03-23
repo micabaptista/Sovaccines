@@ -1,9 +1,6 @@
 #ifndef MEMORY_PRIVATE_H_GUARD
 #define MEMORY_PRIVATE_H_GUARD
 
-#include "memory.h"
-#include "main.h"
-
 //estrutura que representa um buffer circular, completar pelos alunos
 struct circular_buffer {
     struct operation *buffer;
