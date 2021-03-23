@@ -53,7 +53,7 @@ void server_receive_operation(struct operation *op, struct communication_buffers
 void server_process_operation(struct operation *op, int proxy_id, int *counter){
     op->client = proxy_id;
     op->status = 'S';
-    // falta incrementar o contador de operações.
+    *counter +=1;
 }
 
 

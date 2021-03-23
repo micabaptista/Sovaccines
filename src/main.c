@@ -175,17 +175,12 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
     if (*op_counter < data->max_ops) {
         struct operation op = {*op_counter, ' ', 0, 0, 0};
 
-
-
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
         produce_end(sems->main_cli);
 
         printf("O pedido #%d foi criado!\n"
                "Pedido #%d concluído! É agora possível consultar!\n", *data->client_stats,*data->client_stats);
-        //si*ncg
-
-        //sinc
 
         *op_counter = *op_counter + 1;
     }else{
@@ -204,6 +199,8 @@ struct operation getOperation (int id,struct operation *results){
     }
     printf("Op %d ainda não é válido!", id);
 }
+
+
 int isDigit(int length, char num[]) {
     int count;
     for (int i = 0; i < length; i++) {

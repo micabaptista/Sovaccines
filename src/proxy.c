@@ -6,6 +6,7 @@
 #include "../include/proxy.h"
 #include "../include/server.h"
 #include "../include/synchronization.h"
+#include <stdio.h>
 
 #include <stdbool.h>
 
@@ -41,7 +42,7 @@ void proxy_receive_operation(struct operation *op, struct communication_buffers 
 void proxy_process_operation(struct operation *op, int server_id, int *counter) {
     op->client = server_id;
     op->status = 'P';
-    // falta incrementar o contador de operações.
+    *counter+=1;
 }
 
 void proxy_forward_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
