@@ -20,12 +20,14 @@
 * o nome único para o processo.
 */
 sem_t *semaphore_create(char *name, int value) {
-    char id = getuid();
-    char newName[strlen(name)]; // declarar uma string do msm tamanho do name
-    strcpy(newName, name);      // copiar a string que vem do pointer name para a variavel copy
-    strcat(newName, &id);   // concatenar o id gerado com o nome passado por argumento.
+    uid_t id = getuid();
+    // sempre que altero a variavel (a) ja consigo criar um pedido no entanto como o semaforo nao fecha
+    // não consigo depois voltar a usar o memso e tenho de alterar o valor do int
+    int a = 10;
+    char idValue [strlen(name) + sizeof id]; // declarar uma string do msm tamanho do name
+    sprintf(idValue, "%s%d%d", name, id,a);   // concatenar o id gerado com o nome passado por argumento.
 
-    sem_t *sem = sem_open(newName, O_CREAT, 0xFFFFFFFF, value);
+    sem_t *sem = sem_open(idValue, O_CREAT, 0xFFFFFFFF, value);
     if (sem == SEM_FAILED) {
         perror("Não consegui criar o semaforo pretendido");
         return NULL;
@@ -48,7 +50,6 @@ void semaphore_destroy(char *name, sem_t *semaphore) {
 * corretos da estrutura passada em argumento.
 */
 void produce_begin(struct prodcons *pc) {
-    printf("ola");
     if(sem_wait(pc->empty) == -1){
         perror("sem wait");
         exit(1);
