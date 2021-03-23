@@ -13,7 +13,7 @@
 int
 execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     while (true) {
-        printf("dasda\n");
+        printf("asdasdasdo");
 
         //1.
         struct operation op;
@@ -42,7 +42,6 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
 */
 void client_get_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                           struct semaphores *sems) {
-
     consume_begin(sems->main_cli);
     if (*data->terminate == 1) {
         return; //ou break;

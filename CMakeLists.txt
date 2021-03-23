@@ -3,7 +3,7 @@ project(Sovacinnes C)
 
 set(CMAKE_C_STANDARD 99)
 
-set (CMAKE_C_FLAGS "-pthread -lrt -I -g")
+set (CMAKE_C_FLAGS "-pthread -lrt -g")
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread -lrt")
 

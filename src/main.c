@@ -109,10 +109,16 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
 * da estrutura data.
 */
 void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
-    int processPid;
-    *data->client_pids = launch_process(processPid,0,buffers,data,sems);
-    *data->proxy_pids = launch_process(processPid,1,buffers,data,sems);
-    *data->server_pids = launch_process(processPid,2,buffers,data,sems);
+    for (int i = 0; i < data->n_clients ; ++i) {
+        data->client_pids[i] = launch_process(i,0,buffers,data,sems);
+    }
+    for (int i = 0; i < data->n_proxies ; ++i) {
+        data->proxy_pids[i] = launch_process(i,1,buffers,data,sems);
+
+    }
+    for (int i = 0; i < data->n_servers ; ++i) {
+        data->server_pids[i] = launch_process(i,2,buffers,data,sems);
+    }
 }
 
 /* Função que faz interação do utilizador com o sistema, podendo receber 4 comandos:
@@ -157,19 +163,9 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
     }
 }
 
-int isDigit(int length, char num[]) {
-    int count;
-    for (int i = 0; i < length; i++) {
-        count += (isdigit(num[i]) != 0) ? 0 : 1;
-    }
-
-    return count;
-
-}
-
 /* Se o limite de operações ainda não tiver sido atingido, cria uma nova
 * operação identificada pelo valor atual de op_counter, escrevendo a mesma
-* no buffer de memória partilhada entre main e clientes e efetuando a 
+* no buffer de memória partilhada entre main e clientes e efetuando a
 * necessária sincronização antes e depois de escrever. Imprime o id da
 * operação e incrementa o contador de operações op_counter.
 */
@@ -179,14 +175,15 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
     if (*op_counter < data->max_ops) {
         struct operation op = {*op_counter, ' ', 0, 0, 0};
 
-        printf("O pedido #%d foi criado!\n"
-               "Pedido #%d concluído! É agora possível consultar!\n", *data->client_stats,*data->client_stats);
-        //si*ncg
+
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
         produce_end(sems->main_cli);
 
+        printf("O pedido #%d foi criado!\n"
+               "Pedido #%d concluído! É agora possível consultar!\n", *data->client_stats,*data->client_stats);
+        //si*ncg
 
         //sinc
 
@@ -197,6 +194,7 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
     }
 
 }
+
 struct operation getOperation (int id,struct operation *results){
     while ( results != NULL){
         if(results->id == id){
@@ -206,43 +204,52 @@ struct operation getOperation (int id,struct operation *results){
     }
     printf("Op %d ainda não é válido!", id);
 }
+int isDigit(int length, char num[]) {
+    int count;
+    for (int i = 0; i < length; i++) {
+        count += (isdigit(num[i]) != 0) ? 1 : 0;
+    }
+
+    return count;
+
+}
 /* Função que lê um id de operação do utilizador e verifica se a mesma
 * é valida e se já foi respondida por um servidor. Em caso afirmativo,
-* imprime informação da mesma, nomeadamente o seu estado, e os ids do 
-* cliente, proxy e servidor que a processaram. O acesso à estrutura 
+* imprime informação da mesma, nomeadamente o seu estado, e os ids do
+* cliente, proxy e servidor que a processaram. O acesso à estrutura
 * data->results deve ser sincronizado com as funções e semáforos
 * respetivos.
 */
 void read_answer(struct main_data *data, struct semaphores *sems) {
-// #define SIZE  (floor(log10(abs(data->max_ops))) + 1)  não entendi o que querias com isto
+// #define SIZE  (floor(log10(abs(data->max_ops))) + 1)
 
     char msg[data->max_ops];
     int number;
 
     scanf("%s", msg);
-
     if (isDigit(sizeof(msg) / sizeof(char), msg)) {
         number = atoi(msg);
 
-        //semaphore_mutex_lock(sems->results_mutex);
+        printf("%s",msg);
+        semaphore_mutex_lock(sems->results_mutex);
         struct operation operation = getOperation(number,data->results);
-        //semaphore_mutex_unlock(sems->results_mutex);
+        semaphore_mutex_unlock(sems->results_mutex);
 
 
         printf("Op %d com estado %c foi recebida pelo cliente %d, encaminhada pelo proxy %d, ""e tratada pelo servidor %d!",
                operation.id,operation.status,operation.client,operation.proxy,operation.server);
 
     } else {
-            printf("id de operação fornecido é inválido!");
+            printf("id de operação fornecido é inválido!\n");
     }
 }
 
 
 /* Função que termina a execução do programa sovaccines. Deve começar por
 * afetar a flag data->terminate com o valor 1. De seguida, e por esta
-* ordem, deve acordar processos adormecidos, esperar que terminem a sua 
+* ordem, deve acordar processos adormecidos, esperar que terminem a sua
 * execução, escrever as estatisticas finais do programa, e por fim libertar
-* os semáforos e zonas de memória partilhada e dinâmica previamente 
+* os semáforos e zonas de memória partilhada e dinâmica previamente
 *reservadas. Para tal, pode usar as outras funções auxiliares do main.h.
 */
 void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems) {

@@ -25,14 +25,16 @@
 * getuid() a name, para tornar o nome único para o processo.
 */
 void *create_shared_memory(char *name, int size) {
-    char id = getuid();
-    char copy[strlen(name)]; // declarar uma string do msm tamanho do name
-    strcpy(copy, name);      // copiar a string que vem do pointer name para a variavel copy
-    strcat(copy, &id);   // concatenar o id gerado com o nome passado por argumento.
+    uid_t id = getuid();
+    // sempre que altero a variavel (a) ja consigo criar um pedido no entanto como o semaforo nao fecha
+    // não consigo depois voltar a usar o memso e tenho de alterar o valor do int
+    int a = 10; // apagar no fim do projeto
+    char idValue [strlen(name) + sizeof id]; // declarar uma string do msm tamanho do name
+    sprintf(idValue, "%s%d%d", name, id,a);   // concatenar o id gerado com o nome passado por argumento.
 
     int *ptr;
     int ret;
-    int fd = shm_open(copy, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int fd = shm_open(idValue, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
         perror("shm");
         exit(1);
