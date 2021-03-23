@@ -98,7 +98,7 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
     int n;
     for (n = 0; n < buffer_size; n++) {
         if (buffer->ptr[n] == 0) {
-            buffer->buffer = op;
+            buffer->buffer[n] = *op;
             buffer->ptr[n] = 1;
             break;
         }
@@ -113,9 +113,9 @@ void write_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, 
 void write_circular_buffer(struct circular_buffer *buffer, int buffer_size, struct operation *op) {
     for (int i = 0; i < buffer_size; ++i) {
         if ((((buffer->in + 1) % buffer_size) != buffer->out)) {
-            buffer->buffer = op;
+            buffer->buffer[buffer->in] = *op;
             buffer->in = (buffer->in + 1) % buffer_size;
-            break;
+            return;
         }
     }
 }
@@ -130,9 +130,9 @@ void read_rnd_access_buffer(struct rnd_access_buffer *buffer, int buffer_size, s
     int n;
     for (n = 0; n < buffer_size; n++) {
         if (buffer->ptr[n] == 1) {
-            op = buffer->buffer;
+            *op = buffer->buffer[n];
             buffer->ptr[n] = 0;
-            break;
+            return;
         }
     }
     op->id = -1;
@@ -148,7 +148,7 @@ void read_circular_buffer(struct circular_buffer *buffer, int buffer_size, struc
     if (buffer->in == buffer->out) {
         op->id = -1;
     }
-    op = buffer->buffer;
+    *op = buffer->buffer[buffer->out];
     buffer->out = (buffer->out + 1) % buffer_size;
 }
 

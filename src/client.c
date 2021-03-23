@@ -13,19 +13,22 @@
 int
 execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     while (true) {
-        printf("asdasdasdo");
 
         //1.
         struct operation op;
+
         client_get_operation(&op, buffers, data, sems);
+        printf("%d %d\n",op.id,*data->terminate);
         if (op.id != -1 && data->terminate == 0) {
+            printf("OLAOAALALALLALAA \n");
+
             client_process_operation(&op, client_id, data->client_stats);
             client_send_operation(&op, buffers, data, sems);
         }
         //2.
         client_receive_answer(&op, buffers, data, sems);
         if (op.id != -1 && data->terminate == 0) {
-            client_process_operation(&op, client_id, data->client_stats);
+            client_process_answer(&op, data,sems);
         }
         if (op.id == 1 && *data->terminate == 1) {
             return sizeof(data->results);
@@ -59,6 +62,7 @@ void client_get_operation(struct operation *op, struct communication_buffers *bu
 void client_process_operation(struct operation *op, int cient_id, int *counter) {
     op->client = cient_id;
     op->status = 'C';
+    *counter+=1 ;
     // falta incrementar o contador de operações.
 }
 
@@ -101,7 +105,7 @@ void client_receive_answer(struct operation *op, struct communication_buffers *b
 */
 void client_process_answer(struct operation *op, struct main_data *data, struct semaphores *sems) {
     semaphore_mutex_lock(sems->results_mutex);
-    data->results = op;
+     data->results[data->n_clients] = *op; // data->results = op;
     printf("A operação %d terminou", op->id);
     semaphore_mutex_unlock(sems->results_mutex);
 }
