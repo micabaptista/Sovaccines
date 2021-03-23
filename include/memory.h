@@ -2,9 +2,6 @@
 #define MEMORY_H_GUARD
 
 #include "memory-private.h"
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 // Nomes usados na criação de zonas de memoria partilhada
 #define STR_SHM_MAIN_CLI_PTR 			"SHM_MAIN_CLI_PTR"
@@ -27,7 +24,6 @@ struct operation {
 	int proxy; 		//id do proxy que a encaminhou
 	int server;		//id do server que a serviu
 };
-
 
 
 //estrutura que agrega os shared memory buffers necessários para comunicação entre processos

@@ -1,13 +1,18 @@
+#include "../include/main.h"
+#include "../include/client.h"
+#include "../include/memory.h"
+#include "../include/memory-private.h"
+#include "../include/process.h"
+#include "../include/proxy.h"
+#include "../include/server.h"
+#include "../include/synchronization.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/main.h"
-#include "../include/memory.h"
-#include "../include/synchronization.h"
 #include  <ctype.h>
 #include <math.h>
 #include <semaphore.h>
-#include "../include/process.h"
 #include  <stdbool.h>
 
 /* Função que lê os argumentos da aplicação, nomeadamente o número
@@ -105,12 +110,9 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
 */
 void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     int processPid;
-    launch_process(processPid,0,buffers,data,sems);
-    data->client_pids = &processPid;
-    launch_process(processPid,1,buffers,data,sems);
-    data->client_pids = &processPid;
-    launch_process(processPid,2,buffers,data,sems);
-    data->client_pids = &processPid;
+    *data->client_pids = launch_process(processPid,0,buffers,data,sems);
+    *data->proxy_pids = launch_process(processPid,1,buffers,data,sems);
+    *data->server_pids = launch_process(processPid,2,buffers,data,sems);
 }
 
 /* Função que faz interação do utilizador com o sistema, podendo receber 4 comandos:
@@ -179,7 +181,7 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
 
         printf("O pedido #%d foi criado!\n"
                "Pedido #%d concluído! É agora possível consultar!\n", *data->client_stats,*data->client_stats);
-        //si*nc
+        //si*ncg
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);

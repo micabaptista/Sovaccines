@@ -1,6 +1,6 @@
 # possivel makefile inacabado
 OBJ_dir= obj
-OBJETOS = sovacinnes.o memory.o synchronization.o client.o proxy.o server.o process.o main.o
+OBJETOS = memory.o synchronization.o client.o proxy.o server.o process.o main.o sovacinnes.o
 sovacinnes.o =
 client.o =
 main.o =
