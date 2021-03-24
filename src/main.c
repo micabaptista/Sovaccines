@@ -309,7 +309,7 @@ void wakeup_processes(struct main_data *data, struct semaphores *sems) {
 */
 void wait_processes(struct main_data *data) {
     for (int i = 0; i < data->n_clients ; ++i) {
-         wait_process(data->client_pids[i]);
+        data->client_stats[i] = wait_process(data->client_pids[i]);
     }
     for (int i = 0; i < data->n_proxies ; ++i) {
         data->proxy_stats[i] = wait_process(data->proxy_pids[i]);
