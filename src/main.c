@@ -33,6 +33,7 @@ void main_args(int argc, char *argv[], struct main_data *data) {
         data->n_clients = atoi(argv[3]);
         data->n_proxies = atoi(argv[4]);
         data->n_servers = atoi(argv[5]);
+
     }
 }
 
@@ -70,7 +71,9 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
 
     //outros
     data->results = create_shared_memory(STR_SHM_RESULTS, data->buffers_size);
+
     data->terminate = create_shared_memory(STR_SHM_TERMINATE, data->buffers_size);
+
 }
 
 /* Função que inicializa os semáforos da estrutura semaphores. Semáforos
