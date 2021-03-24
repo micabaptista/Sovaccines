@@ -6,14 +6,16 @@
 #include "../include/proxy.h"
 #include "../include/server.h"
 #include "../include/synchronization.h"
-
 #include <stdbool.h>
+#include <stdio.h>
 
 int
 execute_server(int server_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     while (true) {
         struct operation op;
         server_receive_operation(&op, buffers, data, sems);
+        printf("server\n");
+
         if (op.id != -1 && data->terminate == 0) {
             server_process_operation(&op, server_id, data->server_stats);
             server_send_answer(&op, buffers, data, sems);

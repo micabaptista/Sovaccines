@@ -50,6 +50,9 @@ void *create_shared_memory(char *name, int size) {
         perror("shm-mmap");
         exit(3);
     }
+    for (int i = 0; i <size ; ++i) {
+        ptr[i] = 0;
+    }
     return ptr;
 }
 
