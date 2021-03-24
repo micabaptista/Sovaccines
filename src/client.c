@@ -19,7 +19,7 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
 
         client_get_operation(&op, buffers, data, sems);
         if (op.id != -1 && *data->terminate == 0) {
-            client_process_operation(&op, client_id, data->client_stats);
+            client_process_operation(&op, client_id, &data->client_stats[client_id]);
             client_send_operation(&op, buffers, data, sems);
         }
         //2.
@@ -27,8 +27,9 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
         if (op.id != -1 && *data->terminate == 0) {
             client_process_answer(&op, data,sems);
         }
-        if (op.id == -1 && *data->terminate == 1) {
-            return sizeof(data->results);
+        if (op.id != -1 && *data->terminate == 1) {
+
+            return data->proxy_stats[client_id];
         }
     }
 }
@@ -60,7 +61,7 @@ void client_get_operation(struct operation *op, struct communication_buffers *bu
 void client_process_operation(struct operation *op, int cient_id, int *counter) {
     op->client = cient_id;
     op->status = 'C';
-    *counter+=1 ;
+    *counter+=1;
     // falta incrementar o contador de operações.
 }
 
@@ -104,7 +105,7 @@ void client_receive_answer(struct operation *op, struct communication_buffers *b
 void client_process_answer(struct operation *op, struct main_data *data, struct semaphores *sems) {
     semaphore_mutex_lock(sems->results_mutex);
     data->results[op->id] = *op; // data->results = op;
-    printf("A operação %d terminou", op->id);
+    printf("A operação %d terminou\n", op->id);
     semaphore_mutex_unlock(sems->results_mutex);
 }
 

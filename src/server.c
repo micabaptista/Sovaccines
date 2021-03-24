@@ -16,13 +16,12 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
         server_receive_operation(&op, buffers, data, sems);
 
         if (op.id != -1 && *data->terminate == 0) {
-            server_process_operation(&op, server_id, data->server_stats);
+            server_process_operation(&op, server_id, &data->server_stats[server_id]);
             server_send_answer(&op, buffers, data, sems);
         }
 
-
         if (op.id != -1 && *data->terminate == 1) {
-            return sizeof(data->results);
+            return data->server_stats[server_id];
         }
     }
 }

@@ -20,7 +20,7 @@
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
 
-    int pid;
+    int pid ;
     int value;
     if ((pid = fork()) == -1) {
         perror("fork-launcher");
@@ -51,9 +51,9 @@ int wait_process(int process_id) {
     int status;
     waitpid(process_id, &status,0);
 
-    if (status == -1) {
+    if (!WIFEXITED(status)) {
         perror("wait-process-launhcer");
         exit(1);
     }
-    return status;
+    return WEXITSTATUS(status);
 }
