@@ -18,15 +18,13 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
         struct operation op;
 
         client_get_operation(&op, buffers, data, sems);
-        printf("client\n");
         if (op.id != -1 && *data->terminate == 0) {
             client_process_operation(&op, client_id, data->client_stats);
             client_send_operation(&op, buffers, data, sems);
         }
         //2.
-        printf("%d %d\n",op.id,*data->terminate);
         client_receive_answer(&op, buffers, data, sems);
-        if (op.id != -1 && data->terminate == 0) {
+        if (op.id != -1 && *data->terminate == 0) {
             client_process_answer(&op, data,sems);
         }
         if (op.id == -1 && *data->terminate == 1) {
@@ -105,7 +103,7 @@ void client_receive_answer(struct operation *op, struct communication_buffers *b
 */
 void client_process_answer(struct operation *op, struct main_data *data, struct semaphores *sems) {
     semaphore_mutex_lock(sems->results_mutex);
-     data->results[data->n_clients] = *op; // data->results = op;
+    data->results[op->id] = *op; // data->results = op;
     printf("A operação %d terminou", op->id);
     semaphore_mutex_unlock(sems->results_mutex);
 }

@@ -16,8 +16,7 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
     while (true) {
         struct operation op;
         proxy_receive_operation(&op, buffers, data, sems);
-        printf("proxy\n");
-        if (op.id != -1 && data->terminate == 0) {
+        if (op.id != -1 && *data->terminate == 0) {
             proxy_process_operation(&op, proxy_id, data->proxy_stats);
             proxy_forward_operation(&op, buffers, data, sems);
         }
