@@ -28,9 +28,8 @@ void *create_shared_memory(char *name, int size) {
     uid_t id = getuid();
     // sempre que altero a variavel (a) ja consigo criar um pedido no entanto como o semaforo nao fecha
     // não consigo depois voltar a usar o memso e tenho de alterar o valor do int
-    int a = 10; // apagar no fim do projeto
     char idValue [strlen(name) + sizeof id]; // declarar uma string do msm tamanho do name
-    sprintf(idValue, "%s%d%d", name, id,a);   // concatenar o id gerado com o nome passado por argumento.
+    sprintf(idValue, "%s%d", name, id);  // concatenar o id gerado com o nome passado por argumento.
 
     int *ptr;
     int ret;
@@ -70,18 +69,22 @@ void *create_dynamic_memory(int size) {
 /* Função que liberta uma zona de memória dinâmica previamente reservada.
 */
 void destroy_shared_memory(char *name, void *ptr, int size) {
+    uid_t id = getuid();
+    char idValue [strlen(name) + sizeof id]; // declarar uma string do msm tamanho do name
+    sprintf(idValue, "%s%d", name, id);  // concatenar o id gerado com o nome passado por argumento.
 
-    int ret = munmap(&ptr, size);
+    int ret = munmap(ptr, size);
     if (ret == -1) {
-        perror(name);
+        perror("munmap");
         exit(7);
     }
-    ret = shm_unlink(name);
+
+    ret = shm_unlink(idValue);
+
     if (ret == -1) {
-        perror(name);
+        perror(idValue);
         exit(8);
     }
-    exit(0);
 }
 
 

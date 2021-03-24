@@ -23,9 +23,8 @@ sem_t *semaphore_create(char *name, int value) {
     uid_t id = getuid();
     // sempre que altero a variavel (a) ja consigo criar um pedido no entanto como o semaforo nao fecha
     // não consigo depois voltar a usar o memso e tenho de alterar o valor do int
-    int a = 10;
     char idValue [strlen(name) + sizeof id]; // declarar uma string do msm tamanho do name
-    sprintf(idValue, "%s%d%d", name, id,a);   // concatenar o id gerado com o nome passado por argumento.
+    sprintf(idValue, "%s%d", name, id);   // concatenar o id gerado com o nome passado por argumento.
 
     sem_t *sem = sem_open(idValue, O_CREAT, 0xFFFFFFFF, value);
     if (sem == SEM_FAILED) {
@@ -39,10 +38,14 @@ sem_t *semaphore_create(char *name, int value) {
 */
 void semaphore_destroy(char *name, sem_t *semaphore) {
     if (sem_close(semaphore) == -1) {
-        perror(name);
+        perror("sem_close");
     }
-    if (sem_unlink(name) == -1) {
-        perror(name);
+    uid_t id = getuid();
+    char idValue [strlen(name) + sizeof id];
+    sprintf(idValue, "%s%d", name, id);   // concatenar o id gerado com o nome passado por argumento.
+
+    if (sem_unlink(idValue) == -1) {
+        perror("unlink");
     }
 }
 

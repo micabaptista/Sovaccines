@@ -17,13 +17,13 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
         struct operation op;
         proxy_receive_operation(&op, buffers, data, sems);
         if (op.id != -1 && *data->terminate == 0) {
-            proxy_process_operation(&op, proxy_id, data->proxy_stats);
+            proxy_process_operation(&op, proxy_id, &data->proxy_stats[proxy_id]);
             proxy_forward_operation(&op, buffers, data, sems);
         }
         //2.
 
         if (op.id != -1 && *data->terminate == 1) {
-            return sizeof(data->results);
+            return data->proxy_stats[proxy_id];
         }
     }
 }

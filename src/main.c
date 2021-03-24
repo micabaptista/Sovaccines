@@ -73,7 +73,6 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
     data->results = create_shared_memory(STR_SHM_RESULTS, data->buffers_size);
 
     data->terminate = create_shared_memory(STR_SHM_TERMINATE, data->buffers_size);
-
 }
 
 /* Função que inicializa os semáforos da estrutura semaphores. Semáforos
@@ -153,7 +152,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             read_answer(data, sems);
         } else if (strcmp(msg, "stop") == 0) {
             stop_execution(data, buffers, sems);
-            break;
+            return; // break;
         } else if (strcmp(msg, "help") == 0) {
             printf("Ações disponíveis: \n");
             printf("        op - criar um pedido de aquisição de vacinas.\n");
@@ -190,10 +189,6 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
 
         printf("O número máximo de pedidos foi alcançado!\n");
     }
-
-}
-
-struct operation getOperation (int id,int size,struct operation *results){
 
 }
 
@@ -280,34 +275,32 @@ void stop_execution(struct main_data *data, struct communication_buffers *buffer
 * máximo de processos que possam lá estar.
 */
 void wakeup_processes(struct main_data *data, struct semaphores *sems) {
-    // se o VALOR DO sems.mutex for maior que 0 então é pq tem processos ainda por ler.
-    //mutex pergunta se agluem esta a aceder
-    int *value;
 
+    //int value = 0;
     //main_cli
-    sem_getvalue(sems->main_cli->mutex,value);
-    while (*value > 0){
-        consume_end(sems->main_cli);
-        sem_getvalue(sems->main_cli->mutex,value);
+    //if (sem_getvalue(sems->main_cli->empty,&value) == 0 && value < data->buffers_size){
+    for (int i = 0; i < data->max_ops ; ++i) {
+        produce_end(sems->main_cli);
     }
+    //}
     //cli_prx
-    sem_getvalue(sems->cli_prx->mutex,value);
-    while (*value > 0){
-        consume_end(sems->cli_prx);
-        sem_getvalue(sems->cli_prx->mutex,value);
-    }
+    // if (sem_getvalue(sems->cli_prx->empty,&value) == 0  && value < data->max_ops){
+    for (int i = 0; i < data->max_ops ; ++i) {
+            produce_end(sems->cli_prx);
+        }
+    //}
     //prx_srv
-    sem_getvalue(sems->prx_srv->mutex,value);
-    while (*value > 0){
-        consume_end(sems->prx_srv);
-        sem_getvalue(sems->prx_srv->mutex,value);
-    }
+    // if (sem_getvalue(sems->prx_srv->empty,&value) == 0  && value < data->max_ops){
+    for (int i = 0; i < data->max_ops ; ++i) {
+            produce_end(sems->prx_srv);
+        }
+    // }
     //srv_cli
-    sem_getvalue(sems->srv_cli->mutex,value);
-    while (*value > 0){
-        consume_end(sems->srv_cli);
-        sem_getvalue(sems->srv_cli->mutex,value);
-    }
+    //if (sem_getvalue(sems->srv_cli->empty,&value) == 0  && value < data->max_ops){
+    for (int i = 0; i < data->max_ops ; ++i) {
+            produce_end(sems->srv_cli);
+        }
+    // }
 }
 
 /* Função que espera que todos os processos previamente iniciados terminem,
@@ -315,9 +308,15 @@ void wakeup_processes(struct main_data *data, struct semaphores *sems) {
 * wait_process do process.h.
 */
 void wait_processes(struct main_data *data) {
-    wait_process(*data->client_pids);
-    wait_process(*data->proxy_pids);
-    wait_process(*data->server_pids);
+    for (int i = 0; i < data->n_clients ; ++i) {
+         wait_process(data->client_pids[i]);
+    }
+    for (int i = 0; i < data->n_proxies ; ++i) {
+        data->proxy_stats[i] = wait_process(data->proxy_pids[i]);
+    }
+    for (int i = 0; i < data->n_servers ; ++i) {
+        data->server_stats[i] = wait_process(data->server_pids[i]);
+    }
 }
 
 
@@ -325,23 +324,19 @@ void wait_processes(struct main_data *data) {
 * operações foram processadas por cada cliente, proxy e servidor.
 */
 void write_statistics(struct main_data *data) {
-    int process_id;
 
-    for (size_t i = 0; i < data-> n_clients; i++){
-        process_id = *(data->client_pids + i);
-        printf("o cliente %d tratou de  %d processo", process_id , (data->client_stats[process_id]));
+    printf("Terminando o sovaccines! Imprimindo estatísticas:\n");
+    for (int i = 0; i < data-> n_clients; ++i){
+        printf("Cliente %d recebeu de %d processos!\n", i , (data->client_stats[i]));
     }
 
-    for (size_t i = 0; i < data-> n_proxies; i++)
-    {
-        process_id = *(data->proxy_pids + i);
-        printf("o cliente %d tratou de  %d processo", process_id , (data->proxy_stats[process_id]));
+    for (int i = 0; i < data-> n_proxies; ++i){
+        printf("Proxy %d encaminhou de %d processo!\n", i , (data->proxy_stats[i]));
 
     }
 
-    for (size_t i = 0; i < data-> n_servers; i++){
-        process_id = *(data->server_pids + i);
-        printf("o cliente %d tratou de  %d processo", process_id , (data->server_stats[process_id]));
+    for (int i = 0; i < data-> n_servers; ++i){
+        printf("Server %d respondeu de %d processo!\n", i , (data->server_stats[i]));
     }
 }
 
@@ -349,9 +344,10 @@ void write_statistics(struct main_data *data) {
 * reservados na estrutura data.
 */
 void destroy_dynamic_memory_buffers(struct main_data *data) {
-    destroy_dynamic_memory(data->client_pids);
-    destroy_dynamic_memory(data->proxy_pids);
-    destroy_dynamic_memory(data->server_pids);
+        destroy_dynamic_memory(data->client_pids);
+        destroy_dynamic_memory(data->proxy_pids);
+        destroy_dynamic_memory(data->server_pids);
+
 }
 
 
@@ -360,13 +356,21 @@ void destroy_dynamic_memory_buffers(struct main_data *data) {
 */
 void destroy_shared_memory_buffers(struct main_data *data, struct communication_buffers *buffers) {
 
-    destroy_shared_memory(STR_SHM_MAIN_CLI_BUFFER, buffers->main_cli, data->buffers_size);
+    destroy_shared_memory(STR_SHM_MAIN_CLI_BUFFER, buffers->main_cli->buffer, sizeof (struct operation));
+    destroy_shared_memory(STR_SHM_MAIN_CLI_PTR, buffers->main_cli->ptr, data->buffers_size);
 
-    destroy_shared_memory(STR_SHM_CLI_PRX_BUFFER, buffers->cli_prx, data->buffers_size);
+    destroy_shared_memory(STR_SHM_CLI_PRX_BUFFER, buffers->cli_prx->buffer, sizeof (struct operation));
 
-    destroy_shared_memory(STR_SHM_PRX_SRV_BUFFER, buffers->prx_srv, data->buffers_size);
+    destroy_shared_memory(STR_SHM_PRX_SRV_BUFFER, buffers->prx_srv->buffer, sizeof (struct operation));
+    destroy_shared_memory(STR_SHM_PRX_SRV_PTR, buffers->prx_srv->ptr, data->buffers_size);
 
-    destroy_shared_memory(STR_SHM_SRV_CLI_BUFFER, buffers->srv_cli, data->buffers_size);
+    destroy_shared_memory(STR_SHM_SRV_CLI_BUFFER, buffers->srv_cli->buffer, sizeof (struct operation));
+
+    destroy_shared_memory(STR_SHM_RESULTS,data->results, sizeof(*data->results));
+
+    destroy_shared_memory(STR_SHM_TERMINATE,data->terminate, sizeof(*data->terminate));
+
+
 
 }
 
