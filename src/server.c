@@ -14,16 +14,14 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
     while (true) {
         struct operation op;
         server_receive_operation(&op, buffers, data, sems);
-        printf("server\n");
 
-        if (op.id != -1 && data->terminate == 0) {
+        if (op.id != -1 && *data->terminate == 0) {
             server_process_operation(&op, server_id, data->server_stats);
             server_send_answer(&op, buffers, data, sems);
         }
-        //2.
-        if (op.id == -1) {};
 
-        if (*data->terminate == 1) {
+
+        if (op.id != -1 && *data->terminate == 1) {
             return sizeof(data->results);
         }
     }

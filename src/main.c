@@ -193,14 +193,8 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
 
 }
 
-struct operation getOperation (int id,struct operation *results){
-    while ( results != NULL){
-        if(results->id == id){
-            return *results;
-        }
-        results++;
-    }
-    printf("Op %d ainda não é válido!", id);
+struct operation getOperation (int id,int size,struct operation *results){
+
 }
 
 
@@ -230,14 +224,31 @@ void read_answer(struct main_data *data, struct semaphores *sems) {
     if (isDigit(sizeof(msg) / sizeof(char), msg)) {
         number = atoi(msg);
 
-        printf("%s",msg);
+        if(number > data->max_ops){
+            printf("id de operação fornecido é inválido!\n");
+            return;
+        }
+
+
         semaphore_mutex_lock(sems->results_mutex);
-        struct operation operation = getOperation(number,data->results);
+        struct operation operation = {-1,' ',-1,-1,-1};
+
+        for (int i = 0; i <data->max_ops ; i++) {
+            if(data->results[i].id == number){
+                operation = data->results[i];
+                break;
+            }
+        }
         semaphore_mutex_unlock(sems->results_mutex);
 
 
-        printf("Op %d com estado %c foi recebida pelo cliente %d, encaminhada pelo proxy %d, ""e tratada pelo servidor %d!",
+        if(operation.id == -1){
+            printf("Op %d ainda não é válido!\n", number);
+        }else{
+
+        printf("Op %d com estado %c foi recebida pelo cliente %d, encaminhada pelo proxy %d, ""e tratada pelo servidor %d!\n",
                operation.id,operation.status,operation.client,operation.proxy,operation.server);
+        }
 
     } else {
             printf("id de operação fornecido é inválido!\n");
