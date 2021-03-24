@@ -29,7 +29,7 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
         }
         if (op.id != -1 && *data->terminate == 1) {
 
-            return data->proxy_stats[client_id];
+            return data->client_stats[client_id];
         }
     }
 }
