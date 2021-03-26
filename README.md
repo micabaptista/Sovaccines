@@ -2,22 +2,27 @@
 ## Sistemas Operativos
 #### Faculdade de Ciências da Universidade de Lisboa
 
-Michael Baptista | Afonso Rosa | Duarte Pinheiro
+-----
+##Grupo S0-36
+####Michael Baptista nº. 54478 
+####Afonso Rosa nº. 54395 
+####Duarte Pinheiro nº. 54475
 
-Para iniciar o exercutável o comando será:
+------
+Para executar o projeto o comando é:
 
-    - ./bin/sovaccines 10 10 1 1 1 
+    - ./bin/SOVACCINES 10 10 1 1 1 
     
 cujos os parâmetros são respetivamente : 
 
     - max_ops buffers_size n_clients n_proxies n_servers
+----
 
-#
 Algumas dificuldades que sentimos no projeto:
     
-        - A principal foi sem dúvida a quantidade de vezes
-        que tivemos de reniciar a maquina virtual
-        pois era a única solução que tinhamos para
-        dar reset a memória.
+        - A principal dificuldade foi sem dúvida a 
+        quantidade de vezes que tivemos de reniciar 
+        a maquina virtual pois era a única solução 
+        que tinhamos para dar reset à memória.
 
         

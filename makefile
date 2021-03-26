@@ -1,7 +1,10 @@
-# possivel makefile inacabado
+#SO-036
+#Michael Baptista, 54478
+# Afonso Rosa, 54395
+# Duarte Pinheiro, 54475
 OBJ_dir= obj
 OBJETOS = memory.o synchronization.o client.o proxy.o server.o process.o main.o sovacinnes.o
-sovacinnes.o =
+SOVACCINES.o =
 client.o =
 main.o =
 memory.o =
@@ -16,7 +19,7 @@ FLAGS = -pthread -lrt -Wall -lm -g
 vpath %.o $(OBJ_dir)
 
 out: $(OBJETOS)
-	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) $(FLAGS) -o bin/Sovacinnes
+	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) $(FLAGS) -o bin/SOVACCINES
 
 %.o: src/%.c $($@)
 	$(CC) $(FLAGS) -o $(OBJ_dir)/$@ -c $<

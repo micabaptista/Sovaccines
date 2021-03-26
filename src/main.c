@@ -1,13 +1,16 @@
 #include "../include/main.h"
 #include "../include/process.h"
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include  <ctype.h>
 #include  <stdbool.h>
 #include  <unistd.h>
+
+//SO-036
+// Michael Baptista, 54478
+// Afonso Rosa, 54395
+// Duarte Pinheiro, 54475
 
 void main_args(int argc, char *argv[], struct main_data *data) {
     if (argc < 6) {

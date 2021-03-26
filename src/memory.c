@@ -1,5 +1,4 @@
 #include "../include/main.h"
-
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -7,6 +6,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
+
+//SO-036
+// Michael Baptista, 54478
+// Afonso Rosa, 54395
+// Duarte Pinheiro, 54475
 
 void *create_shared_memory(char *name, int size) {
     uid_t id = getuid();

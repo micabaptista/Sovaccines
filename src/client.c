@@ -1,7 +1,11 @@
 #include "../include/client.h"
-
 #include <stdbool.h>
 #include <stdio.h>
+
+//SO-036
+// Michael Baptista, 54478
+// Afonso Rosa, 54395
+// Duarte Pinheiro, 54475
 
 int
 execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {

@@ -1,11 +1,14 @@
 #include "../include/main.h"
-
 #include <fcntl.h>
 #include<unistd.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
 
+//SO-036
+// Michael Baptista, 54478
+// Afonso Rosa, 54395
+// Duarte Pinheiro, 54475
 
 sem_t *semaphore_create(char *name, int value) {
     uid_t id = getuid();

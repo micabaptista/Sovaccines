@@ -3,11 +3,15 @@
 #include "../include/process.h"
 #include "../include/proxy.h"
 #include "../include/server.h"
-
 #include <unistd.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include <sys/wait.h>
+
+//SO-036
+// Michael Baptista, 54478
+// Afonso Rosa, 54395
+// Duarte Pinheiro, 54475
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
