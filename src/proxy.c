@@ -1,13 +1,5 @@
 #include "../include/main.h"
-#include "../include/client.h"
-#include "../include/memory.h"
-#include "../include/memory-private.h"
-#include "../include/process.h"
 #include "../include/proxy.h"
-#include "../include/server.h"
-#include "../include/synchronization.h"
-#include <stdio.h>
-
 #include <stdbool.h>
 
 
@@ -20,7 +12,6 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
             proxy_process_operation(&op, proxy_id, &data->proxy_stats[proxy_id]);
             proxy_forward_operation(&op, buffers, data, sems);
         }
-        //2.
 
         if (op.id != -1 && *data->terminate == 1) {
             return data->proxy_stats[proxy_id];
@@ -32,9 +23,9 @@ void proxy_receive_operation(struct operation *op, struct communication_buffers 
                              struct semaphores *sems) {
     consume_begin(sems->cli_prx);
     if (*data->terminate == 1) {
-        return; //ou break;
+        return;
     }
-    read_circular_buffer(buffers->cli_prx, sizeof(buffers->cli_prx), op);
+    read_circular_buffer(buffers->cli_prx, data->buffers_size, op);
     consume_end(sems->cli_prx);
 }
 
@@ -47,6 +38,6 @@ void proxy_process_operation(struct operation *op, int server_id, int *counter) 
 void proxy_forward_operation(struct operation *op, struct communication_buffers *buffers, struct main_data *data,
                              struct semaphores *sems) {
     produce_begin(sems->prx_srv);
-    write_rnd_access_buffer(buffers->prx_srv, sizeof(buffers->prx_srv), op);
+    write_rnd_access_buffer(buffers->prx_srv, (data->buffers_size +1), op);
     produce_end(sems->prx_srv);
 }

@@ -11,12 +11,12 @@ server.o =
 synchronization.o =
 memory-private.o =
 CC = gcc
-FLAGS = -pthread -lrt -Wall -I -g
+FLAGS = -pthread -lrt -Wall -lm -g
 
 vpath %.o $(OBJ_dir)
 
 out: $(OBJETOS)
-	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) -pthread  -g -lrt -Wall -lm -o Sovacinnes
+	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) $(FLAGS) -o bin/Sovacinnes
 
 %.o: src/%.c $($@)
 	$(CC) $(FLAGS) -o $(OBJ_dir)/$@ -c $<

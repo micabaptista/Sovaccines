@@ -1,13 +1,5 @@
-
 #include "../include/main.h"
-#include "../include/client.h"
-#include "../include/memory.h"
-#include "../include/memory-private.h"
-#include "../include/process.h"
-#include "../include/proxy.h"
-#include "../include/server.h"
-#include "../include/synchronization.h"
-#include <stdio.h>
+
 
 
 int main(int argc, char *argv[]) {
