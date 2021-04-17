@@ -21,6 +21,13 @@ struct main_data {
 	int* proxy_stats;	//nº de operações encaminhadas por cada proxy
 	int* server_stats;	//nº de operações respondidas por cada servidor
 	
+	//log_filename
+	//statistics_filename
+	int alarm_time;		//temporização para o alarme 
+
+
+
+
 	struct operation* results;	//array com histórico de ops executadas
 	
 	int* terminate; //flag booleana, valor 1 indica que sovaccines deve terminar a sua execução
