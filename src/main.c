@@ -13,24 +13,18 @@
 // Duarte Pinheiro, 54475
 
 void main_args(int argc, char *argv[], struct main_data *data) {
-    if (argc < 6) {
-        printf("Uso: sovaccines max_ops buffers_size n_clients n_proxies n_servers\n"
-               "Exemplo: ./bin/sovaccines 10 10 1 1 1\n");
+    if (argc > 6) {
+        printf("Uso: sovaccines filename\n"
+               "Exemplo: ./bin/sovaccines input.txt\n");
         exit(-1);
 
-    } else if (atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0 || atoi(argv[4]) <= 0
-               || atoi(argv[5]) <= 0) {
+    } else if (acceptValues(argv[1])) {
         printf("Parâmetros incorretos! Exemplo de uso: ./bin/sovaccines 10 10 1 1 1\n");
         exit(-1);
 
     } else {
 
-        data->max_ops = atoi(argv[1]);
-        data->buffers_size = atoi(argv[2]);
-        data->n_clients = atoi(argv[3]);
-        data->n_proxies = atoi(argv[4]);
-        data->n_servers = atoi(argv[5]);
-
+        putValues(argv[1],data);
     }
 }
 
