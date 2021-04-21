@@ -3,6 +3,7 @@
 
 #include "memory.h"
 #include "synchronization.h"
+#include "configuration.h"
 
 //Estrutura que agrega a informação necessária pela main do sovaccines.
 struct main_data {
@@ -21,8 +22,8 @@ struct main_data {
 	int* proxy_stats;	//nº de operações encaminhadas por cada proxy
 	int* server_stats;	//nº de operações respondidas por cada servidor
 	
-	//log_filename
-	//statistics_filename
+	char log_filename[];
+	char statistics_filename[];
 	int alarm_time;		//temporização para o alarme 
 
 
