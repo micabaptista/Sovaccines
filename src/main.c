@@ -143,7 +143,7 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
                     struct semaphores *sems) {
 
     if (*op_counter < data->max_ops) {
-        struct operation op = {*op_counter, ' ', 0, 0, 0}; //modificar
+        struct operation op = {*op_counter, ' ', -1, -1, -1}; //modificar
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
