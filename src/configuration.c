@@ -4,47 +4,33 @@
 #include <string.h>
 #include "main.h"
 
-void putValues(char inputFile[],struct main_data *data)
+void getInfo(char *inputFile,struct main_data *data)
 {
-    FILE *fp;
-   
-    
-    fp = fopen(inputFile, "r");
+    FILE *fp = fopen(inputFile, "r");
+    char line[256];
 
+    data->max_ops=atoi(fgets(line, sizeof(line), fp));
+    data->buffers_size=atoi(fgets(line, sizeof(line), fp));
+    data->n_clients=atoi(fgets(line, sizeof(line), fp));
+    data->n_proxies=atoi(fgets(line, sizeof(line), fp));
+    data->n_servers=atoi(fgets(line, sizeof(line), fp));
+    data->log_filename=fgets(line, sizeof(line), fp) ;
+    data->statistics_filename=fgets(line, sizeof(line), fp);
+    data->alarm_time=atoi(fgets(line, sizeof(line), fp);
+    fclose(fp);
+    };
 
-    data->max_ops=atoi(fgetc(fp));
-    data->buffers_size=atoi(fgetc(fp));
-    data->n_clients=atoi(fgetc(fp));
-    data->n_proxies=atoi(fgetc(fp));
-    data->n_servers=atoi(fgetc(fp));
-    data->log_filename=fgetc(fp);
-    data->statistics_filename=fgetc(fp);
-    data->alarm_time=atoi(fgetc(fp));
-
-
-   fclose(fp);
-   
-
-
-
-};
-
-
-bool acceptValues(char inputFile[]){
+//talvez juntar as duas
+bool acceptValues(char * inputFile){
     bool valid=false;
-    FILE *fp;
+    FILE *fp = fopen(inputFile, "r");
+    char line[256];
 
-    if(atoi(fgetc(fp))>0&&atoi(fgetc(fp)>0)&&atoi(fgetc(fp)>0)&&atoi(fgetc(fp))>0&&atoi(fgetc(fp))// op buffer client proxy server
-    &&!strcomp(fgetc(fp),"")&&!strcomp(fgetc(fp),"")// logFilename statisticsFileName
-    &&atoi(fgetc(fp)>0)){ //alarmTime
-    
+    if(atoi(fgets(line, sizeof(line), fp)) > 0 && atoi(fgets(line, sizeof(line), fp) > 0 )  && atoi(fgets(line, sizeof(line), fp))
+        && atoi(fgets(line, sizeof(line), fp)) > 0 && atoi(fgets(line, sizeof(line), fp)) && !strcomp(fgets(line, sizeof(line), fp), "") 
+        && !strcomp(fgets(line, sizeof(line), fp),"") && atoi(fgets(line, sizeof(line), fp) > 0)){ 
         valid=true;
     }
-
-
-   
-    
-    fp = fopen(inputFile, "r");
     fclose(fp);
     return valid;
 }

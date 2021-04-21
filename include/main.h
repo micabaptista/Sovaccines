@@ -22,12 +22,9 @@ struct main_data {
 	int* proxy_stats;	//nº de operações encaminhadas por cada proxy
 	int* server_stats;	//nº de operações respondidas por cada servidor
 	
-	char log_filename[];
-	char statistics_filename[];
+	char* log_filename;	//falta reservar memoria
+	char* statistics_filename;
 	int alarm_time;		//temporização para o alarme 
-
-
-
 
 	struct operation* results;	//array com histórico de ops executadas
 	

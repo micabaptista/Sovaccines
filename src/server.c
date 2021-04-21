@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/server.h"
+#include "../include/sotime.h"
 #include <stdbool.h>
 
 //SO-036
@@ -15,6 +16,7 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
 
         if (op.id != -1 && *data->terminate == 0) {
             server_process_operation(&op, server_id, &data->server_stats[server_id]);
+            op.server_time = marcaTempo();
             server_send_answer(&op, buffers, data, sems);
         }
 

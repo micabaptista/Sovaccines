@@ -51,29 +51,15 @@ void write_status(){
           //ver se sincronizaçao
           *op = data_global->results[i];
 
-          switch (op->status)
+          if (op->status == 'C'|| op->status == 'P'|| op->status == 'S' )
           {
-          case 'C':
-            printf("op:%d status:%c start:%d", op->id, op->status, op->start_time);
-            printf("client:%d client_time:%c \n", op->client, op->client_time);
-            break;
-
-          case 'P':
-            printf("op:%d status:%c start:%d", op->id, op->status, op->start_time);
-            printf("client:%d client_time:%c ", op->client, op->client_time);
-            printf("proxy:%d proxy_time:%c \n ", op->proxy, op->proxy_time);
-            break;
-
-          case 'S':
             printf("op:%d status:%c start:%d", op->id, op->status, op->start_time);
             printf("client:%d client_time:%c ", op->client, op->client_time);
             printf("proxy:%d proxy_time:%c ", op->proxy, op->proxy_time);
             printf("server:%d server_time:%c end:%d \n", op->server, op->server_time, op->end_time);
-            break;
+          }else { 
 
-          default:
-            printf("op:%d status:0 start:%d \n", i, op->start_time);
-            break;
+            printf("op:%d status:0 start:%d \n", i, op->start_time);  
           }
         }
         else

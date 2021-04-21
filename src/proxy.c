@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/proxy.h"
+#include "../include/sotime.h"
 #include <stdbool.h>
 
 //SO-036
@@ -14,6 +15,7 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
         proxy_receive_operation(&op, buffers, data, sems);
         if (op.id != -1 && *data->terminate == 0) {
             proxy_process_operation(&op, proxy_id, &data->proxy_stats[proxy_id]);
+            op.proxy_time = marcaTempo();
             proxy_forward_operation(&op, buffers, data, sems);
         }
 
