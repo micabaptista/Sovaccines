@@ -16,7 +16,19 @@ void funcao1 (){
 
 int main(int argc, char const *argv[])
 {
-    funcao1();
-    printf("%d",a);
-    return 0;
+    int i = -1;
+    char * line;
+    FILE *fp = fopen("teste1", "r");
+    printf("ola")
+    do
+    {
+        i++;
+        line[i] = getc(fp);
+    
+    } while (line[i] != EOF || line[i] != '\n');
+    
+    if (line[0] != EOF)
+    {
+        printf("%c \n", line[0]);
+    }
 }

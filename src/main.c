@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/process.h"
+#include "../include/sotime.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,26 +100,31 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];
-
-
+    FILE *log = openLogFile(data->log_filename);
+    
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");
     printf("        stop - termina a execução do sovaccines.\n");
     printf("        help - imprime informação sobre as ações disponíveis.\n");
 
+
     while (true) {
 
 
         printf("Introduzir ação:\n");
         scanf("%s", msg);
-
+        
         if (strcmp(msg, "op") == 0) {
+            
+            registaLog(log, msg);
             create_request(data->client_stats, buffers, data, sems);
+
         } else if (strcmp(msg, "read") == 0) {
-            read_answer(data, sems);
+            read_answer(data, sems, log);
         } else if (strcmp(msg, "stop") == 0) {
-            stop_execution(data, buffers, sems);
+            registaLog(log, msg);
+            stop_execution(data, buffers, sems, log);
             return; // break;
         } else if (strcmp(msg, "help") == 0) {
             printf("Ações disponíveis: \n");
@@ -127,6 +133,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             printf("        stop - termina a execução do sovaccines.\n");
             printf("        help - imprime informação sobre as ações disponíveis.\n");
         } else {
+            registaLog(log, msg);
             printf("Ação não reconhecida, insira 'help' para assistência.\n");
         }
         usleep(10000);
@@ -137,11 +144,13 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
                     struct semaphores *sems) {
 
     if (*op_counter < data->max_ops) {
-        struct operation op = {*op_counter, ' ', -1, -1, -1}; //modificar
+        struct operation op = {*op_counter, ' ', -1, -1, -1, 0, 0, 0, 0, 0};
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
         produce_end(sems->main_cli);
+
+        op.start_time = marcaTempo();
 
         printf("O pedido #%d foi criado!\n", *data->client_stats);
 
@@ -165,12 +174,16 @@ int isDigit(int length, char num[]) {
 }
 
 
-void read_answer(struct main_data *data, struct semaphores *sems) {
+void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 
     char msg[data->max_ops];
     int number;
 
     scanf("%s", msg);
+    char * input =  sprintf(input,"read %s", msg);
+
+    registaLog(fp, input);
+
     if (isDigit(sizeof(msg) / sizeof(char), msg)) {
         number = atoi(msg);
 
@@ -206,11 +219,12 @@ void read_answer(struct main_data *data, struct semaphores *sems) {
 }
 
 
-void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems) {
-    *data->terminate = 1;
+void stop_execution(struct main_data *data, struct communation_buffers *buffers, struct semaphores *sems, FILE * fp) {
+    *data->terminate = 1;ic
     wakeup_processes(data, sems);
     wait_processes(data);
     write_statistics(data);
+    closeLogFile(fp);
     destroy_semaphores(sems);
     destroy_shared_memory_buffers(data, buffers);
     destroy_dynamic_memory_buffers(data);
