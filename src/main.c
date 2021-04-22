@@ -1,12 +1,14 @@
 #include "../include/main.h"
 #include "../include/process.h"
 #include "../include/sotime.h"
+#include "../include/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include  <ctype.h>
 #include  <stdbool.h>
 #include  <unistd.h>
+#include <signal.h>
 
 //SO-036
 // Michael Baptista, 54478
@@ -14,6 +16,7 @@
 // Duarte Pinheiro, 54475
 
 void main_args(int argc, char *argv[], struct main_data *data) {
+
     if (argc > 6) {
         printf("Uso: sovaccines filename\n"
                "Exemplo: ./bin/sovaccines input.txt\n");
@@ -24,7 +27,6 @@ void main_args(int argc, char *argv[], struct main_data *data) {
         exit(-1);
 
     } else {
-
         putValues(argv[1],data);
     }
 }
@@ -97,11 +99,17 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
         data->server_pids[i] = launch_process(i, 2, buffers, data, sems);
     }
 }
+void ctrlC (FILE *log){
+    signal(SIGINT,ctrlC(FILE *log))
+    registaLog(log, msg);
+    stop_execution(data, buffers, sems, log);
+    exit(1);
+}
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];
     FILE *log = openLogFile(data->log_filename);
-    
+    signal(SIGINT,ctrlC(log));
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");
@@ -338,4 +346,3 @@ void destroy_semaphores(struct semaphores *sems) {
     //results
     semaphore_destroy(STR_SEM_RESULTS_MUTEX, sems->results_mutex);
 }
-
