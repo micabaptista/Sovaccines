@@ -1,10 +1,6 @@
-#ifndef SERVER_H_GUARD
-#define SERVER_H_GUARD
 
-#include "main.h"
-#include "memory.h"
-
-
+#ifndef SOVACCINES_SOSIGNAL_H
+#define SOVACCINES_SOSIGNAL_H
 
 /*
 * Funçao que marca o tempo atual.
@@ -12,10 +8,9 @@
 */
 int acionaAlarme( struct main_data* data, struct operation* op);
 
-
 /*
 * Funçao que escrve o status das operaçoes.
 */
 void write_status();
 
-#endif
+#endif //SOVACCINES_SOSIGNAL_H

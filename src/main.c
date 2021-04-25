@@ -99,8 +99,11 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
         data->server_pids[i] = launch_process(i, 2, buffers, data, sems);
     }
 }
-void ctrlC (FILE *log){
-    signal(SIGINT,ctrlC(FILE *log))
+
+
+void ctrlC (){
+    signal(SIGINT,ctrlC);
+
     registaLog(log, msg);
     stop_execution(data, buffers, sems, log);
     exit(1);
@@ -109,7 +112,7 @@ void ctrlC (FILE *log){
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];
     FILE *log = openLogFile(data->log_filename);
-    signal(SIGINT,ctrlC(log));
+    signal(SIGINT,ctrlC);
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");

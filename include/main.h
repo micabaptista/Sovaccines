@@ -74,6 +74,10 @@ void launch_processes(struct communication_buffers* buffers, struct main_data* d
 * stop - termina o execução do sovaccines através da função stop_execution
 * help - imprime informação sobre os comandos disponiveis
 */
+
+void ctrlC ();
+
+
 void user_interaction(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
 
 /* Se o limite de operações ainda não tiver sido atingido, cria uma nova

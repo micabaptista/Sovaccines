@@ -1,9 +1,5 @@
-#ifndef SERVER_H_GUARD
-#define SERVER_H_GUARD
-
-
-
-
+#ifndef SOVACCINES_SOTIME_H
+#define SOVACCINES_SOTIME_H
 
 /*
 * Funçao que marca o tempo atual.
@@ -11,6 +7,6 @@
 */
 struct timespec marcaTempo();
 
-//falta metodos de converao de tempos ver depos dos ficheiros
+char * formataTempo(struct timespec * tempo);
 
 #endif
