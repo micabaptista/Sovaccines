@@ -3,8 +3,13 @@
 # Afonso Rosa, 54395
 # Duarte Pinheiro, 54475
 OBJ_dir= obj
-OBJETOS = memory.o synchronization.o client.o proxy.o server.o process.o main.o sovacinnes.o
+OBJETOS = sotime.o memory.o synchronization.o configuration.o log.o client.o proxy.o server.o process.o main.o stats.o sosignal.o sovacinnes.o
 SOVACCINES.o =
+configuration.o =
+log.o =
+sosignal.o =
+sotime.o =
+stats.o =
 client.o =
 main.o =
 memory.o =

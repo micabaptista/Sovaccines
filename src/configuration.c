@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include "main.h"
+#include "../include/main.h"
 
 void getInfo(char *inputFile,struct main_data *data)
 {
@@ -16,7 +16,7 @@ void getInfo(char *inputFile,struct main_data *data)
     data->n_servers=atoi(fgets(line, sizeof(line), fp));
     data->log_filename=fgets(line, sizeof(line), fp) ;
     data->statistics_filename=fgets(line, sizeof(line), fp);
-    data->alarm_time=atoi(fgets(line, sizeof(line), fp);
+    data->alarm_time=atoi(fgets(line, sizeof(line), fp));
     fclose(fp);
     };
 
