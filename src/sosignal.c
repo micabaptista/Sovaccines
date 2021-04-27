@@ -5,34 +5,22 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <stdlib.h>
+
+#include <unistd.h>
+
 #include "../include/main.h"
 #include "../include/memory.h"
 
 struct main_data* data_global ;
-/*
-* Funçao que marca o tempo atual.
-* Retorna -1 em caso de erro.
-*/
-void acionaAlarme( struct main_data* data ){
+struct communication_buffers *buffers_global;
+struct semaphores* sems_global;
+FILE *log_global;
 
-    struct itimerval val;
-    data_global = data;
-    
-    setbuf(stdout, NULL); //nap sei se é para usar
-    signal(SIGALRM, write_status);
-    val.it_interval.tv_sec = data->alarm_time;
-    val.it_interval.tv_usec = 0;
-    val.it_value.tv_sec = data->alarm_time;
-    val.it_value.tv_usec = 0;
-    setitimer(ITIMER_REAL, &val , 0);
-    for(;;);
 
-}
- 
-/**/
 void write_status(){
-  struct operation* op;
-    //falata acabar, duvida aqui
+
+  struct operation *op = create_dynamic_memory(sizeof(struct operation));
+    
     if (*data_global->terminate != -1)
     {
       for (int i = 0; i < data_global->max_ops; i++)
@@ -40,9 +28,10 @@ void write_status(){
 
         if (i < *data_global->client_stats /*nao sei se esta certo*/)
         {
-          //ver se sincronizaçao
+          semaphore_mutex_lock(sems_global->results_mutex);
           *op = data_global->results[i];
-
+          semaphore_mutex_unlock(sems_global->results_mutex);
+          
           if (op->status == 'C'|| op->status == 'P'|| op->status == 'S' )
           {
             printf("op:%d status:%c start:%ld", op->id, op->status, op->start_time.tv_sec);
@@ -66,7 +55,60 @@ void write_status(){
       exit(0);
     }        
 };
+
+
+
+/*
+* Funçao que marca o tempo atual.
+* Retorna -1 em caso de erro.
+*/
+void acionaAlarme( struct main_data* data, struct semaphores *sems){
+
+    struct itimerval val;
+    data_global = data;
+    sems_global = sems;
     
+    setbuf(stdout, NULL); //nap sei se é para usar
+    signal(SIGALRM, write_status);
+    val.it_interval.tv_sec = data->alarm_time;
+    val.it_interval.tv_usec = 0;
+    val.it_value.tv_sec = data->alarm_time;
+    val.it_value.tv_usec = 0;
+    setitimer(ITIMER_REAL, &val , 0);
+    
+
+}
+ 
+/**/
+
+void ctrlC(){
+    signal(SIGINT,ctrlC);
+    stop_execution(data_global, buffers_global, sems_global, log_global);
+    exit(1);
+}
+
+
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE *log){
+  buffers_global = buffers;
+  sems_global = sems;
+  log_global = log;
+  struct sigaction sa;
+  sa.sa_handler = ctrlC;
+  sa.sa_flags = 0;
+  sigemptyset(&sa.sa_mask);
+  
+  if (sigaction(SIGINT, &sa, NULL) == -1) {
+    perror("main:");
+    exit(-1);
+  }
+  
+}
+
+
+
+
+
+
 
     
 

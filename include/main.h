@@ -22,9 +22,9 @@ struct main_data {
 	int* proxy_stats;	//nº de operações encaminhadas por cada proxy
 	int* server_stats;	//nº de operações respondidas por cada servidor
 	
-	char* log_filename;	//falta reservar memoria
+	char* log_filename;	
 	char* statistics_filename;
-	int alarm_time;		//temporização para o alarme 
+	int * alarm_time;		//temporização para o alarme 
 
 	struct operation* results;	//array com histórico de ops executadas
 	
@@ -38,7 +38,7 @@ struct main_data {
 * servidores. Guarda esta informação nos campos apropriados da
 * estrutura main_data.
 */
-void main_args(int argc, char* argv[], struct main_data* data);
+struct main_data * main_args(int argc, char* argv[]);
 
 /* Função que reserva a memória dinâmica necessária para a execução
 * do sovaccines, nomeadamente para os arrays *_pids e *_stats da estrutura 
@@ -75,7 +75,7 @@ void launch_processes(struct communication_buffers* buffers, struct main_data* d
 * help - imprime informação sobre os comandos disponiveis
 */
 
-void ctrlC ();
+
 
 
 void user_interaction(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
@@ -95,7 +95,7 @@ void create_request(int* op_counter, struct communication_buffers* buffers, stru
 * data->results deve ser sincronizado com as funções e semáforos
 * respetivos.
 */
-void read_answer(struct main_data* data, struct semaphores* sems);
+void read_answer(struct main_data* data, struct semaphores* sems, FILE * fp);
 
 /* Função que termina a execução do programa sovaccines. Deve começar por 
 * afetar a flag data->terminate com o valor 1. De seguida, e por esta
@@ -104,7 +104,7 @@ void read_answer(struct main_data* data, struct semaphores* sems);
 * os semáforos e zonas de memória partilhada e dinâmica previamente 
 *reservadas. Para tal, pode usar as outras funções auxiliares do main.h.
 */
-void stop_execution(struct main_data* data, struct communication_buffers* buffers, struct semaphores* sems);
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp);
 
 /* Função que acorda todos os processos adormecidos em semáforos, para que
 * estes percebam que foi dada ordem de terminação do programa. Para tal,

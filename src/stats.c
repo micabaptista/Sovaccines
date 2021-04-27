@@ -1,11 +1,12 @@
 #include "../include/stats.h"
+#include "../include/sotime.h"
 
 
-void write_statistics(struct main_data *data, char * name){
+void write_stats(struct main_data *data, char * name, struct semaphores *sems){
     FILE * fp = fopen(name, "w");
     char * text = "";
     struct operation op;
-    int counter = data->client_stats;
+    
     double dif;
     fputs("Process Statistics:\n", fp);
     for (int i = 0; i < data->n_clients; ++i) {
@@ -26,8 +27,9 @@ void write_statistics(struct main_data *data, char * name){
     fputs("Operation Statistics:\n", fp);
     for (int i = 0; i < data->client_stats; i++)
     {
-        //ver sinc
+        semaphore_mutex_lock(sems->results_mutex);
         op = data->results[i];
+        semaphore_mutex_unlock(sems->results_mutex);
         //ver se funciona fputs + fputs
         sprintf(text, "OP: %d\n", op.id);
         fputs(text,fp);
@@ -47,19 +49,19 @@ void write_statistics(struct main_data *data, char * name){
         sprintf(text, "Created: %d\n", op.client);
         fputs(text,fp);
 
-        sprintf(text, "Created: %s\n", FormataTempo(op.start_time));
+        sprintf(text, "Created: %s\n", formataTempo(&op.start_time));
         fputs(text,fp);
 
-        sprintf(text, "Client_time: %s\n", FormataTempo(op.client_time));
+        sprintf(text, "Client_time: %s\n", formataTempo(&op.client_time));
         fputs(text,fp);
 
-        sprintf(text, "Proxy_time: %s\n", FormataTempo(op.proxy_time));
+        sprintf(text, "Proxy_time: %s\n", formataTempo(&op.proxy_time));
         fputs(text,fp);
 
-        sprintf(text, "Server_time: %s\n", FormataTempo(op.server_time));
+        sprintf(text, "Server_time: %s\n", formataTempo(&op.server_time));
         fputs(text,fp);
 
-        sprintf(text, "Ended: %s\n", FormataTempo(op.end_time));
+        sprintf(text, "Ended: %s\n", formataTempo(&op.end_time));
         fputs(text,fp);
 
         dif = ( op.end_time.tv_sec - op.start_time.tv_sec ) + ( op.end_time.tv_nsec - op.start_time.tv_nsec ) / 1000000000L;

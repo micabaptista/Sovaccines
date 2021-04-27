@@ -1,13 +1,17 @@
 #include "../include/main.h"
 #include "../include/process.h"
 #include "../include/sotime.h"
+#include "../include/sosignal.h"
 #include "../include/log.h"
+#include "../include/configuration.h"
+#include "../include/memory.h"
+#include "../include/stats.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include  <ctype.h>
-#include  <stdbool.h>
-#include  <unistd.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include <signal.h>
 
 //SO-036
@@ -15,20 +19,20 @@
 // Afonso Rosa, 54395
 // Duarte Pinheiro, 54475
 
-void main_args(int argc, char *argv[], struct main_data *data) {
-
-    if (argc > 6) {
+struct main_data * main_args(int argc, char *argv[]) {
+    /*mudar*/
+    if (argc != 2) {
         printf("Uso: sovaccines filename\n"
                "Exemplo: ./bin/sovaccines input.txt\n");
         exit(-1);
-
+    
     } else if (acceptValues(argv[1])) {
         printf("Parâmetros incorretos! Exemplo de uso: ./bin/sovaccines 10 10 1 1 1\n");
         exit(-1);
 
-    } else {
-        putValues(argv[1],data);
-    }
+    } 
+    return getInfo(argv[1]);
+    
 }
 
 
@@ -41,6 +45,9 @@ void create_dynamic_memory_buffers(struct main_data *data) {
     data->client_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->proxy_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->server_stats = create_dynamic_memory(data->max_ops * sizeof(int));
+    data->log_filename = create_dynamic_memory(sizeof(char) * 22);
+    data->statistics_filename = create_dynamic_memory(sizeof(char) * 22);
+    data->alarm_time = create_dynamic_memory(sizeof(int) * 22);
 
 }
 
@@ -101,18 +108,16 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 }
 
 
-void ctrlC (){
-    signal(SIGINT,ctrlC);
 
-    registaLog(log, msg);
-    stop_execution(data, buffers, sems, log);
-    exit(1);
-}
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];
+    printf("antes\n");
+    acionaAlarme(data, sems);
+    printf("depois + %s + %d\n", data->log_filename, data->max_ops);
     FILE *log = openLogFile(data->log_filename);
-    signal(SIGINT,ctrlC);
+    capturaSinal(buffers, sems, log);
+    
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");
@@ -127,7 +132,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
         scanf("%s", msg);
         
         if (strcmp(msg, "op") == 0) {
-            
+            printf("ola\n");
             registaLog(log, msg);
             create_request(data->client_stats, buffers, data, sems);
 
@@ -138,6 +143,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             stop_execution(data, buffers, sems, log);
             return; // break;
         } else if (strcmp(msg, "help") == 0) {
+            registaLog(log, msg);
             printf("Ações disponíveis: \n");
             printf("        op - criar um pedido de aquisição de vacinas.\n");
             printf("        read x - consultar o estado do pedido x.\n");
@@ -153,21 +159,19 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
 
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
                     struct semaphores *sems) {
-
+                    
+    struct timespec time = {-1, -1};
     if (*op_counter < data->max_ops) {
-        struct operation op = {*op_counter, ' ', -1, -1, -1, 0, 0, 0, 0, 0};
+        struct operation op = {*op_counter, ' ', -1, -1, -1, time, time, time, time, time};
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
+        marcaTempo(&op.start_time);
         produce_end(sems->main_cli);
-
-        op.start_time = marcaTempo();
-
+        
         printf("O pedido #%d foi criado!\n", *data->client_stats);
-
         *op_counter = *op_counter + 1;
     } else {
-
         printf("O número máximo de pedidos foi alcançado!\n");
     }
 
@@ -191,7 +195,8 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
     int number;
 
     scanf("%s", msg);
-    char * input =  sprintf(input,"read %s", msg);
+    char input[12];
+    sprintf(input,"read %s", msg);
 
     registaLog(fp, input);
 
@@ -205,7 +210,8 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 
 
         semaphore_mutex_lock(sems->results_mutex);
-        struct operation operation = {-1, ' ', -1, -1, -1};
+        struct timespec time = {-1, -1};
+        struct operation operation = {-1, ' ', -1, -1, -1, time, time, time, time, time};
 
         for (int i = 0; i < data->max_ops; i++) {
             if (data->results[i].id == number) {
@@ -230,11 +236,12 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 }
 
 
-void stop_execution(struct main_data *data, struct communation_buffers *buffers, struct semaphores *sems, FILE * fp) {
-    *data->terminate = 1;ic
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp) {
+    *data->terminate = 1;
     wakeup_processes(data, sems);
     wait_processes(data);
     write_statistics(data);
+    write_stats(data, data->statistics_filename, sems);
     closeLogFile(fp);
     destroy_semaphores(sems);
     destroy_shared_memory_buffers(data, buffers);
@@ -280,7 +287,7 @@ void wait_processes(struct main_data *data) {
     }
 }
 
-
+//acho que via desaparecer
 void write_statistics(struct main_data *data) {
 
     printf("Terminando o sovaccines! Imprimindo estatísticas:\n");
@@ -303,6 +310,12 @@ void destroy_dynamic_memory_buffers(struct main_data *data) {
     destroy_dynamic_memory(data->client_pids);
     destroy_dynamic_memory(data->proxy_pids);
     destroy_dynamic_memory(data->server_pids);
+    
+    destroy_dynamic_memory(data->client_stats);
+    destroy_dynamic_memory(data->proxy_stats);
+    destroy_dynamic_memory(data->server_stats);
+    destroy_dynamic_memory(data->log_filename);
+    destroy_dynamic_memory( data->statistics_filename);
 
 }
 

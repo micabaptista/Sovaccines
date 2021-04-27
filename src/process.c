@@ -3,6 +3,8 @@
 #include "../include/process.h"
 #include "../include/proxy.h"
 #include "../include/server.h"
+#include "../include/sosignal.h"
+#include "../include/log.h"
 #include <unistd.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -15,7 +17,7 @@
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
-
+    FILE *log = openLogFile(data->log_filename);
     int pid ;
     int value;
     if ((pid = fork()) == -1) {
@@ -25,12 +27,15 @@ int launch_process(int process_id, int process_code, struct communication_buffer
     if (pid == 0) { //fork funcionou e este processo é o filho
         /* Processo filho */
         if (process_code == 0) {
+            capturaSinal(  buffers, sems, log);
             value = execute_client(process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 1) {
+            capturaSinal(  buffers, sems, log);
             value = execute_proxy( process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 2) {
+            capturaSinal(  buffers, sems, log);
             value = execute_server( process_id, buffers, data, sems);
             exit(value);
         }
