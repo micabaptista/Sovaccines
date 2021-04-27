@@ -13,9 +13,7 @@ struct  timespec * marcaTempo(){
     struct timespec * tempo;
      clock_gettime( CLOCK_REALTIME, tempo);
      return tempo;
-};
-
-#endif
+}
 
 
 char * FormataTempo( struct timespec * tempo){
@@ -23,5 +21,6 @@ char * FormataTempo( struct timespec * tempo){
     char * timeFormat;
     time_t milli = (tempo->tv_nsec) / 1000000;
     sprintf(timeFormat, "%d-%d-%d %d:%d:%d.%d", 1900 + time2->tm_year, time2->tm_mon, time2->tm_mday, time2->tm_hour, time2->tm_min, time2->tm_sec, (int) milli);
-    return timeFormat
-}
+    return timeFormat;
+};
+#endif

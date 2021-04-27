@@ -2,6 +2,8 @@
 #define MEMORY_H_GUARD
 
 #include "memory-private.h"
+#include "sotime.h"
+#include <time.h>
 
 // Nomes usados na criação de zonas de memoria partilhada
 #define STR_SHM_MAIN_CLI_PTR 			"SHM_MAIN_CLI_PTR"

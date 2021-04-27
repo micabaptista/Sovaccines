@@ -1,7 +1,10 @@
 #include "../include/main.h"
 #include "../include/server.h"
 #include "../include/sotime.h"
+
+#include <time.h>
 #include <stdbool.h>
+
 
 //SO-036
 // Michael Baptista, 54478
