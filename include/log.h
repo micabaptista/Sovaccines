@@ -1,5 +1,3 @@
-
-
 #ifndef SOVACCINES_LOG_H
 #define SOVACCINES_LOG_H
 

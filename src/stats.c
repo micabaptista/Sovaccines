@@ -1,5 +1,4 @@
-#include "../include/main.h"
-#include <stdio.h>
+#include "../include/stats.h"
 
 
 void write_statistics(struct main_data *data, char * name){
