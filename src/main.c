@@ -55,12 +55,9 @@ void create_dynamic_memory_buffers(struct main_data *data) {
 
 
 void create_shared_memory_buffers(struct main_data *data, struct communication_buffers *buffers) {
-    printf("create shared memory buffers + %s + %s\n",data->log_filename ,data->statistics_filename);
     
     //random
     buffers->main_cli->ptr = create_shared_memory(STR_SHM_MAIN_CLI_PTR, data->buffers_size);
-    printf("create shared memory buffers21 + %s + %s + %d\n",data->log_filename ,data->statistics_filename, data->alarm_time);
-
     buffers->main_cli->buffer = create_shared_memory(STR_SHM_MAIN_CLI_BUFFER, data->buffers_size);
     //circular
     buffers->cli_prx->buffer = create_shared_memory(STR_SHM_CLI_PRX_BUFFER, data->buffers_size);
@@ -70,11 +67,8 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
     //circular
     buffers->srv_cli->buffer = create_shared_memory(STR_SHM_SRV_CLI_BUFFER, data->buffers_size);
 
-    printf("create shared memory buffers2 + %s + %s\n",data->log_filename ,data->statistics_filename);
-    
     //outros
     data->results = create_shared_memory(STR_SHM_RESULTS, data->buffers_size);
-
     data->terminate = create_shared_memory(STR_SHM_TERMINATE, data->buffers_size);
 }
 
@@ -119,10 +113,8 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
-    char msg[4];
-    printf("antes + %s\n", data->log_filename);
+    char msg[4];;
     acionaAlarme(data, sems);
-    printf("depois + %s + %d\n", data->log_filename, data->max_ops);
     FILE *log = openLogFile(data->log_filename);
     capturaSinal(buffers, sems, log);
     

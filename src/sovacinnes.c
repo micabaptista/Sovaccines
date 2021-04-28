@@ -29,14 +29,10 @@ int main(int argc, char *argv[]) {
 
 //execute main code
     create_dynamic_memory_buffers(data);
-    main_args(argc, argv, data);
-    printf("sovacines + %s + %s\n",data->log_filename ,data->statistics_filename);
+    main_args(argc, argv, data); 
     create_shared_memory_buffers(data, buffers);
-    printf("sovacines2 + %s + %s\n",data->log_filename ,data->statistics_filename);
     create_semaphores(data, sems);
-    
-    launch_processes(buffers, data, sems);
-    
+    launch_processes(buffers, data, sems);    
     user_interaction(buffers, data, sems);
 //release final memory
     destroy_dynamic_memory(data);
