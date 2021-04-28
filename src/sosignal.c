@@ -1,5 +1,4 @@
-#ifndef SERVER_H_GUARD
-#define SERVER_H_GUARD
+
 
 #include <stdio.h>
 #include <signal.h>
@@ -14,13 +13,12 @@
 struct main_data* data_global ;
 struct communication_buffers *buffers_global;
 struct semaphores* sems_global;
-FILE *log_global;
 
 
 void write_status(){
 
-  struct operation *op = create_dynamic_memory(sizeof(struct operation));
-    
+  struct operation op;
+    printf("ALARME2\n");
     if (*data_global->terminate != -1)
     {
       for (int i = 0; i < data_global->max_ops; i++)
@@ -29,18 +27,18 @@ void write_status(){
         if (i < *data_global->client_stats /*nao sei se esta certo*/)
         {
           semaphore_mutex_lock(sems_global->results_mutex);
-          *op = data_global->results[i];
+          op = data_global->results[i];
           semaphore_mutex_unlock(sems_global->results_mutex);
           
-          if (op->status == 'C'|| op->status == 'P'|| op->status == 'S' )
+          if (op.status == 'C'|| op.status == 'P'|| op.status == 'S' )
           {
-            printf("op:%d status:%c start:%ld", op->id, op->status, op->start_time.tv_sec);
-            printf("client:%d client_time:%ld ", op->client, op->client_time.tv_sec);
-            printf("proxy:%d proxy_time:%ld ", op->proxy, op->proxy_time.tv_sec);
-            printf("server:%d server_time:%ld end:%ld \n", op->server, op->server_time.tv_sec, op->end_time.tv_sec);
+            printf("op:%d status:%c start:%ld", op.id, op.status, op.start_time.tv_sec);
+            printf("client:%d client_time:%ld ", op.client, op.client_time.tv_sec);
+            printf("proxy:%d proxy_time:%ld ", op.proxy, op.proxy_time.tv_sec);
+            printf("server:%d server_time:%ld end:%ld \n", op.server, op.server_time.tv_sec, op.end_time.tv_sec);
           }else { 
 
-            printf("op:%d status:0 start:%ld \n", i, op->start_time.tv_sec);
+            printf("op:%d status:0 start:%ld \n", i, op.start_time.tv_sec);
           }
         }
         else
@@ -63,7 +61,7 @@ void write_status(){
 * Retorna -1 em caso de erro.
 */
 void acionaAlarme( struct main_data* data, struct semaphores *sems){
-
+    printf("ALARME\n");
     struct itimerval val;
     data_global = data;
     sems_global = sems;
@@ -82,16 +80,17 @@ void acionaAlarme( struct main_data* data, struct semaphores *sems){
 /**/
 
 void ctrlC(){
+    printf("CAPTURA2\n");
     signal(SIGINT,ctrlC);
-    stop_execution(data_global, buffers_global, sems_global, log_global);
+    stop_execution(data_global, buffers_global, sems_global);
     exit(1);
 }
 
 
-void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE *log){
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems){
+  printf("CAPTURA\n");
   buffers_global = buffers;
   sems_global = sems;
-  log_global = log;
   struct sigaction sa;
   sa.sa_handler = ctrlC;
   sa.sa_flags = 0;
@@ -113,4 +112,3 @@ void capturaSinal( struct communication_buffers* buffers, struct semaphores* sem
     
 
 
-#endif

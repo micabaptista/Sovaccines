@@ -105,7 +105,7 @@ void read_answer(struct main_data* data, struct semaphores* sems, FILE * fp);
 * os semáforos e zonas de memória partilhada e dinâmica previamente 
 *reservadas. Para tal, pode usar as outras funções auxiliares do main.h.
 */
-void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp);
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems);
 
 /* Função que acorda todos os processos adormecidos em semáforos, para que
 * estes percebam que foi dada ordem de terminação do programa. Para tal,

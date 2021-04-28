@@ -47,8 +47,8 @@ void create_dynamic_memory_buffers(struct main_data *data) {
     data->client_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->proxy_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->server_stats = create_dynamic_memory(data->max_ops * sizeof(int));
-    data->log_filename = create_dynamic_memory(sizeof(char) * 22);
-    data->statistics_filename = create_dynamic_memory(sizeof(char) * 22);
+    data->log_filename = create_dynamic_memory(sizeof(char) * 10);
+    data->statistics_filename = create_dynamic_memory(sizeof(char) * 10);
 
 
 }
@@ -115,8 +115,8 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];;
     acionaAlarme(data, sems);
-    FILE *log = openLogFile(data->log_filename);
-    capturaSinal(buffers, sems, log);
+    
+    capturaSinal(buffers, sems);
     
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
@@ -126,21 +126,22 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
 
 
     while (true) {
-
-
+        FILE *log = openLogFile(data->log_filename);
+        printf("ciclo Antes \n");
         printf("Introduzir ação:\n");
         scanf("%s", msg);
         
         if (strcmp(msg, "op") == 0) {
-            printf("ola\n");
+            printf("ficheiros + %d\n", data->n_servers);
             registaLog(log, msg);
             create_request(data->client_stats, buffers, data, sems);
-
+            
         } else if (strcmp(msg, "read") == 0) {
             read_answer(data, sems, log);
         } else if (strcmp(msg, "stop") == 0) {
             registaLog(log, msg);
-            stop_execution(data, buffers, sems, log);
+            closeLogFile(log);
+            stop_execution(data, buffers, sems);
             return; // break;
         } else if (strcmp(msg, "help") == 0) {
             registaLog(log, msg);
@@ -154,7 +155,9 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             printf("Ação não reconhecida, insira 'help' para assistência.\n");
         }
         usleep(10000);
+        closeLogFile(log);
     }
+    
 }
 
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
@@ -236,13 +239,12 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 }
 
 
-void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp) {
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems ){
     *data->terminate = 1;
     wakeup_processes(data, sems);
     wait_processes(data);
     write_statistics(data);
     write_stats(data, data->statistics_filename, sems);
-    closeLogFile(fp);
     destroy_semaphores(sems);
     destroy_shared_memory_buffers(data, buffers);
     destroy_dynamic_memory_buffers(data);

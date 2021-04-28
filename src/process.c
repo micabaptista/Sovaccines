@@ -17,7 +17,6 @@
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
                    struct semaphores *sems) {
-    FILE *log = openLogFile(data->log_filename);
     int pid ;
     int value;
     if ((pid = fork()) == -1) {
@@ -27,15 +26,15 @@ int launch_process(int process_id, int process_code, struct communication_buffer
     if (pid == 0) { //fork funcionou e este processo é o filho
         /* Processo filho */
         if (process_code == 0) {
-            capturaSinal(  buffers, sems, log);
+            capturaSinal(  buffers, sems);
             value = execute_client(process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 1) {
-            capturaSinal(  buffers, sems, log);
+            capturaSinal(  buffers, sems);
             value = execute_proxy( process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 2) {
-            capturaSinal(  buffers, sems, log);
+            capturaSinal(  buffers, sems);
             value = execute_server( process_id, buffers, data, sems);
             exit(value);
         }

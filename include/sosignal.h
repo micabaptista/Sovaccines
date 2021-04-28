@@ -14,7 +14,7 @@ void acionaAlarme( struct main_data* data, struct semaphores *sems );
 void write_status();
 
 
-void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE *log);
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems);
  
 void ctrlC ();
 #endif //SOVACCINES_SOSIGNAL_H
