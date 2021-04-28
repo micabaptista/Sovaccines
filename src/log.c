@@ -5,10 +5,10 @@
 
 
 FILE * openLogFile(char * name){
-    printf("ola1 + %s\n", name);
+    printf("openlog file + ola1 + %s\n", name);
     if (fopen(name, "a") != NULL)
     {
-        printf("parabens\n");
+        printf("openlog file +parabens\n");
     }
     
     

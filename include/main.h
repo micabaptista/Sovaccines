@@ -1,9 +1,10 @@
 #ifndef MAIN_H_GUARD
 #define MAIN_H_GUARD
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "memory.h"
 #include "synchronization.h"
-#include "configuration.h"
+
 
 //Estrutura que agrega a informação necessária pela main do sovaccines.
 struct main_data {
@@ -24,7 +25,7 @@ struct main_data {
 	
 	char* log_filename;	
 	char* statistics_filename;
-	int * alarm_time;		//temporização para o alarme 
+	int  alarm_time;		//temporização para o alarme 
 
 	struct operation* results;	//array com histórico de ops executadas
 	
@@ -38,7 +39,7 @@ struct main_data {
 * servidores. Guarda esta informação nos campos apropriados da
 * estrutura main_data.
 */
-struct main_data * main_args(int argc, char* argv[]);
+void main_args(int argc, char* argv[], struct main_data * data);
 
 /* Função que reserva a memória dinâmica necessária para a execução
 * do sovaccines, nomeadamente para os arrays *_pids e *_stats da estrutura 

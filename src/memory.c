@@ -13,6 +13,7 @@
 // Duarte Pinheiro, 54475
 
 void *create_shared_memory(char *name, int size) {
+    
     uid_t id = getuid();
     // sempre que altero a variavel (a) ja consigo criar um pedido no entanto como o semaforo nao fecha
     // não consigo depois voltar a usar o memso e tenho de alterar o valor do int

@@ -25,7 +25,7 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
     }
 
     fputs("Operation Statistics:\n", fp);
-    for (int i = 0; i < data->client_stats; i++)
+    for (int i = 0; i < *data->client_stats; i++)
     {
         semaphore_mutex_lock(sems->results_mutex);
         op = data->results[i];

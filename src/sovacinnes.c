@@ -9,6 +9,7 @@
 int main(int argc, char *argv[]) {
 
 //init data structures
+    struct main_data * data = create_dynamic_memory(sizeof(struct main_data));
     struct communication_buffers* buffers = create_dynamic_memory(sizeof(struct communication_buffers));
     
     buffers->main_cli = create_dynamic_memory(sizeof(struct
@@ -27,10 +28,11 @@ int main(int argc, char *argv[]) {
     sems->srv_cli = create_dynamic_memory(sizeof(struct prodcons));
 
 //execute main code
-
-    struct main_data* data = main_args(argc, argv);
     create_dynamic_memory_buffers(data);
+    main_args(argc, argv, data);
+    printf("sovacines + %s + %s\n",data->log_filename ,data->statistics_filename);
     create_shared_memory_buffers(data, buffers);
+    printf("sovacines2 + %s + %s\n",data->log_filename ,data->statistics_filename);
     create_semaphores(data, sems);
     
     launch_processes(buffers, data, sems);

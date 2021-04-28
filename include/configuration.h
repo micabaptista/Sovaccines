@@ -1,3 +1,4 @@
+#include "main.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -7,7 +8,7 @@
 
 bool acceptValues(char *inputFile);
 
-struct main_data * getInfo(char *inputFile);
+void getInfo(char *inputFile, struct main_data * data);
 
 
 

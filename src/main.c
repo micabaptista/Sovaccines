@@ -19,7 +19,7 @@
 // Afonso Rosa, 54395
 // Duarte Pinheiro, 54475
 
-struct main_data * main_args(int argc, char *argv[]) {
+void main_args(int argc, char *argv[], struct main_data * data) {
     /*mudar*/
     if (argc != 2) {
         printf("Uso: sovaccines filename\n"
@@ -30,8 +30,10 @@ struct main_data * main_args(int argc, char *argv[]) {
         printf("Parâmetros incorretos! Exemplo de uso: ./bin/sovaccines 10 10 1 1 1\n");
         exit(-1);
 
-    } 
-    return getInfo(argv[1]);
+    } else {
+        getInfo(argv[1], data);
+    }
+    
     
 }
 
@@ -47,14 +49,18 @@ void create_dynamic_memory_buffers(struct main_data *data) {
     data->server_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->log_filename = create_dynamic_memory(sizeof(char) * 22);
     data->statistics_filename = create_dynamic_memory(sizeof(char) * 22);
-    data->alarm_time = create_dynamic_memory(sizeof(int) * 22);
+
 
 }
 
 
 void create_shared_memory_buffers(struct main_data *data, struct communication_buffers *buffers) {
+    printf("create shared memory buffers + %s + %s\n",data->log_filename ,data->statistics_filename);
+    
     //random
     buffers->main_cli->ptr = create_shared_memory(STR_SHM_MAIN_CLI_PTR, data->buffers_size);
+    printf("create shared memory buffers21 + %s + %s + %d\n",data->log_filename ,data->statistics_filename, data->alarm_time);
+
     buffers->main_cli->buffer = create_shared_memory(STR_SHM_MAIN_CLI_BUFFER, data->buffers_size);
     //circular
     buffers->cli_prx->buffer = create_shared_memory(STR_SHM_CLI_PRX_BUFFER, data->buffers_size);
@@ -64,6 +70,8 @@ void create_shared_memory_buffers(struct main_data *data, struct communication_b
     //circular
     buffers->srv_cli->buffer = create_shared_memory(STR_SHM_SRV_CLI_BUFFER, data->buffers_size);
 
+    printf("create shared memory buffers2 + %s + %s\n",data->log_filename ,data->statistics_filename);
+    
     //outros
     data->results = create_shared_memory(STR_SHM_RESULTS, data->buffers_size);
 
@@ -112,7 +120,7 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];
-    printf("antes\n");
+    printf("antes + %s\n", data->log_filename);
     acionaAlarme(data, sems);
     printf("depois + %s + %d\n", data->log_filename, data->max_ops);
     FILE *log = openLogFile(data->log_filename);
