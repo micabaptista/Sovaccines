@@ -115,34 +115,30 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
     char msg[4];;
     acionaAlarme(data, sems);
-    
-    capturaSinal(buffers, sems);
-    
+
+    FILE *log = openLogFile(data->log_filename);
+    capturaSinal(buffers, sems,log);
+
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
     printf("        read x - consultar o estado do pedido x.\n");
     printf("        stop - termina a execução do sovaccines.\n");
     printf("        help - imprime informação sobre as ações disponíveis.\n");
 
-
     while (true) {
-        FILE *log = openLogFile(data->log_filename);
-        printf("ciclo Antes \n");
         printf("Introduzir ação:\n");
         scanf("%s", msg);
         
         if (strcmp(msg, "op") == 0) {
-            printf("ficheiros + %d\n", data->n_servers);
             registaLog(log, msg);
             create_request(data->client_stats, buffers, data, sems);
-            
         } else if (strcmp(msg, "read") == 0) {
             read_answer(data, sems, log);
         } else if (strcmp(msg, "stop") == 0) {
             registaLog(log, msg);
             closeLogFile(log);
             stop_execution(data, buffers, sems);
-            return; // break;
+            return;
         } else if (strcmp(msg, "help") == 0) {
             registaLog(log, msg);
             printf("Ações disponíveis: \n");
@@ -155,9 +151,8 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             printf("Ação não reconhecida, insira 'help' para assistência.\n");
         }
         usleep(10000);
-        closeLogFile(log);
     }
-    
+    closeLogFile(log);
 }
 
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
@@ -169,9 +164,9 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
 
         produce_begin(sems->main_cli);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
-        marcaTempo(&op.start_time);
         produce_end(sems->main_cli);
-        
+        marcaTempo(&op.start_time);
+
         printf("O pedido #%d foi criado!\n", *data->client_stats);
         *op_counter = *op_counter + 1;
     } else {

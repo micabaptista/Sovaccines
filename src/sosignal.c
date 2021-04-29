@@ -9,16 +9,17 @@
 
 #include "../include/main.h"
 #include "../include/memory.h"
+#include "../include/log.h"
 
 struct main_data* data_global ;
 struct communication_buffers *buffers_global;
 struct semaphores* sems_global;
+FILE * log_global;
 
 
 void write_status(){
 
   struct operation op;
-    printf("ALARME2\n");
     if (*data_global->terminate != -1)
     {
       for (int i = 0; i < data_global->max_ops; i++)
@@ -80,17 +81,17 @@ void acionaAlarme( struct main_data* data, struct semaphores *sems){
 /**/
 
 void ctrlC(){
-    printf("CAPTURA2\n");
     signal(SIGINT,ctrlC);
+    registaLog(log_global, "ctrl C");
     stop_execution(data_global, buffers_global, sems_global);
     exit(1);
 }
 
 
-void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems){
-  printf("CAPTURA\n");
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE *log ){
   buffers_global = buffers;
   sems_global = sems;
+  log_global = log;
   struct sigaction sa;
   sa.sa_handler = ctrlC;
   sa.sa_flags = 0;
