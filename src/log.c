@@ -5,25 +5,25 @@
 
 
 FILE * openLogFile(char * name){
-    printf("abre ficheiro\n");
-    return fopen(name, "a"); 
+    return fopen(name, "a");
     
 }
 
 
 void registaLog( FILE * fp, char * input){
-    printf("registaLog\n");
     struct timespec time = {-1, -1};
+
     marcaTempo(&time);
-    
-    char * timeFormat = formataTempo( &time);
-    
-    strcat(input, "\n\0");
-    strcat(timeFormat, " "); 
+
+    char timeFormat [40 * sizeof (int)];
+
+    formataTempo(&time,timeFormat);
+
+    strcat(timeFormat, " ");
     strcat(timeFormat,input);
-    printf("ola + %s \n", timeFormat);
+    strcat(timeFormat,"\n\0");
     fputs(timeFormat, fp);
-    
+
 }
 
 void closeLogFile(FILE * fp){

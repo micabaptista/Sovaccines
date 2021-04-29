@@ -8,6 +8,6 @@
 */
 void marcaTempo(struct timespec* tempo);
 
-char * formataTempo(struct timespec * tempo);
+void formataTempo(struct timespec * tempo, char * timeFormat);
 
 #endif

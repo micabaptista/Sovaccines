@@ -4,7 +4,7 @@
 
 void write_stats(struct main_data *data, char * name, struct semaphores *sems){
     FILE * fp = fopen(name, "w");
-    char * text = "";
+    char text [100];
     struct operation op;
     
     double dif;
@@ -49,19 +49,26 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
         sprintf(text, "Created: %d\n", op.client);
         fputs(text,fp);
 
-        sprintf(text, "Created: %s\n", formataTempo(&op.start_time));
+        char timeFormat [40 * sizeof (int)];
+
+        formataTempo(&op.start_time,timeFormat);
+        sprintf(text, "Created: %s\n", timeFormat);
         fputs(text,fp);
 
-        sprintf(text, "Client_time: %s\n", formataTempo(&op.client_time));
+        formataTempo(&op.client_time,timeFormat);
+        sprintf(text, "Client_time: %s\n", timeFormat);
         fputs(text,fp);
 
-        sprintf(text, "Proxy_time: %s\n", formataTempo(&op.proxy_time));
+        formataTempo(&op.proxy_time,timeFormat);
+        sprintf(text, "Proxy_time: %s\n", timeFormat);
         fputs(text,fp);
 
-        sprintf(text, "Server_time: %s\n", formataTempo(&op.server_time));
+        formataTempo(&op.server_time,timeFormat);
+        sprintf(text, "Server_time: %s\n", timeFormat);
         fputs(text,fp);
 
-        sprintf(text, "Ended: %s\n", formataTempo(&op.end_time));
+        formataTempo(&op.end_time,timeFormat);
+        sprintf(text, "Ended: %s\n", timeFormat);
         fputs(text,fp);
 
         dif = ( op.end_time.tv_sec - op.start_time.tv_sec ) + ( op.end_time.tv_nsec - op.start_time.tv_nsec ) / 1000000000L;

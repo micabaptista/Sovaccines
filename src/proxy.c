@@ -35,8 +35,8 @@ void proxy_receive_operation(struct operation *op, struct communication_buffers 
     consume_end(sems->cli_prx);
 }
 
-void proxy_process_operation(struct operation *op, int server_id, int *counter) {
-    op->client = server_id;
+void proxy_process_operation(struct operation *op, int proxy_id, int *counter) {
+    op->proxy = proxy_id;
     op->status = 'P';
     *counter+=1;
 }

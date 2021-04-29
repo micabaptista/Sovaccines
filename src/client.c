@@ -49,8 +49,8 @@ void client_get_operation(struct operation *op, struct communication_buffers *bu
 }
 
 
-void client_process_operation(struct operation *op, int cient_id, int *counter) {
-    op->client = cient_id;
+void client_process_operation(struct operation *op, int client_id, int *counter) {
+    op->client = client_id;
     op->status = 'C';
     *counter+=1;
 }
