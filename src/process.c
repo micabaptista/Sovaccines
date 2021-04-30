@@ -23,7 +23,7 @@ int launch_process(int process_id, int process_code, struct communication_buffer
         perror("fork-launcher");
         exit(1);
     }
-    if (pid == 0) { //fork funcionou e este processo é o filho
+    if (pid == 0) {
         /* Processo filho */
         if (process_code == 0) {
             value = execute_client(process_id, buffers, data, sems);

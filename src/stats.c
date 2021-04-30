@@ -30,8 +30,6 @@ void write_stats(struct main_data *data, struct semaphores *sems){
         temp1 = temp1 + data->client_stats[i];
     }
 
-    printf("%d",temp1);
-
     for (int i = 0; i < temp1; i++){
         semaphore_mutex_lock(sems->results_mutex);
         op = data->results[i];

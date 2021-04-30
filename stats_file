@@ -1,0 +1,16 @@
+Process Statistics:
+Client 0 received 1 requests!
+Proxy 0 forwarded de 1 requests!
+Server 0 responded de 1 requests!
+Operation Statistics:
+OP: 0
+Status: S
+Client_id: 0
+Proxy_id: 0
+Server_id: 0
+Created: 2021-4-30 23:3:44.684
+Client_time: 2021-4-30 23:3:44.690
+Proxy_time: 2021-4-30 23:3:44.695
+Server_time: 2021-4-30 23:3:44.700
+Ended: 2021-4-30 23:3:44.707
+Total Time: 0.23

@@ -47,7 +47,8 @@ void getInfo(char *inputFile, struct main_data * data){
     getline(&line, &len, fp);
     data->alarm_time = atoi(line);
 
-  fclose(fp);
+    free(line);
+    fclose(fp);
 }
 
 bool acceptValues(char * inputFile){

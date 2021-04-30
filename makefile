@@ -24,11 +24,11 @@ FLAGS = -pthread -lrt -Wall -lm -g
 vpath %.o $(OBJ_dir)
 
 out: $(OBJETOS)
-	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) $(FLAGS) -o SOVACCINES
+	$(CC) $(addprefix $(OBJ_dir)/,$(OBJETOS)) $(FLAGS) -o bin/SOVACCINES
 
 %.o: src/%.c $($@)
 	$(CC) $(FLAGS) -o $(OBJ_dir)/$@ -c $<
 
 clean:
 	rm -f obj/*
-	rm -f SOVACCINES
+	rm -f bin/SOVACCINES

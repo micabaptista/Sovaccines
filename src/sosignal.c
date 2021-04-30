@@ -14,7 +14,6 @@
 struct main_data* data_global ;
 struct communication_buffers *buffers_global;
 struct semaphores* sems_global;
-FILE * log_global;
 
 
 void write_status(){
@@ -79,15 +78,14 @@ void acionaAlarme( struct main_data* data, struct semaphores *sems){
 /**/
 
 void ctrlC(){
-    stop_execution(data_global, buffers_global, sems_global,log_global);
+    stop_execution(data_global, buffers_global, sems_global);
     exit(0);
 }
 
 
-void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE * log ){
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems ){
   buffers_global = buffers;
   sems_global = sems;
-  log_global = log;
   struct sigaction sa;
   sigemptyset(&sa.sa_mask);
   sa.sa_handler = ctrlC;

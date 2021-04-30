@@ -20,14 +20,14 @@
 // Duarte Pinheiro, 54475
 
 void main_args(int argc, char *argv[], struct main_data * data) {
-    /*mudar*/
+
     if (argc != 2) {
-        printf("Uso: sovaccines filename\n"
-               "Exemplo: ./bin/sovaccines input.txt\n");
+        printf("Porfavor insira o ficheiro com a entrada dos parametros,\n"
+               "Exemplo: ./bin/SOVACCINES config.txt\n");
         exit(-1);
     
     } else if (acceptValues(argv[1])) {
-        printf("Parâmetros incorretos! Exemplo de uso: ./bin/sovaccines 10 10 1 1 1\n");
+        printf("Parâmetros passados pelo ficheiro estão incorretos!\n");
         exit(-1);
 
     } else {
@@ -46,8 +46,8 @@ void create_dynamic_memory_buffers(struct main_data *data) {
     data->proxy_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->server_stats = create_dynamic_memory(data->max_ops * sizeof(int));
 
-    data->log_filename = create_dynamic_memory(sizeof(char) * 10);
-    data->statistics_filename = create_dynamic_memory(sizeof(char) * 10);
+    data->log_filename = create_dynamic_memory(sizeof(char) * 15);
+    data->statistics_filename = create_dynamic_memory(sizeof(char) * 15);
 
 
 }
@@ -114,8 +114,8 @@ void launch_processes(struct communication_buffers *buffers, struct main_data *d
 
 void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
 
-    FILE * log = openLogFile(data->log_filename);
-    capturaSinal(buffers, sems, log);
+    FILE * log_file = openLogFile(data->log_filename);
+    capturaSinal(buffers, sems);
 
     char msg[4];
     acionaAlarme(data, sems);
@@ -131,27 +131,28 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
         scanf("%s", msg);
         
         if (strcmp(msg, "op") == 0) {
-            registaLog(log, msg);
+            registaLog(log_file, msg);
             create_request(data->client_stats, buffers, data, sems);
         } else if (strcmp(msg, "read") == 0) {
-            read_answer(data, sems, log);
+            read_answer(data, sems, log_file);
         } else if (strcmp(msg, "stop") == 0) {
-            registaLog(log, msg);
-            stop_execution(data, buffers, sems,log);
-            return;
+            registaLog(log_file, msg);
+            stop_execution(data, buffers, sems);
+            break;
         } else if (strcmp(msg, "help") == 0) {
-            registaLog(log, msg);
+            registaLog(log_file, msg);
             printf("Ações disponíveis: \n");
             printf("        op - criar um pedido de aquisição de vacinas.\n");
             printf("        read x - consultar o estado do pedido x.\n");
             printf("        stop - termina a execução do sovaccines.\n");
             printf("        help - imprime informação sobre as ações disponíveis.\n");
         } else {
-            registaLog(log, msg);
+            registaLog(log_file, msg);
             printf("Ação não reconhecida, insira 'help' para assistência.\n");
         }
         usleep(10000);
     }
+    closeLogFile(log_file);
 }
 
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
@@ -232,9 +233,8 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 }
 
 
-void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp){
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems){
     *data->terminate = 1;
-    closeLogFile(fp);
     wakeup_processes(data, sems);
     wait_processes(data);
 
@@ -306,10 +306,11 @@ void destroy_dynamic_memory_buffers(struct main_data *data) {
     destroy_dynamic_memory(data->client_pids);
     destroy_dynamic_memory(data->proxy_pids);
     destroy_dynamic_memory(data->server_pids);
-    
+
     destroy_dynamic_memory(data->client_stats);
     destroy_dynamic_memory(data->proxy_stats);
     destroy_dynamic_memory(data->server_stats);
+
     destroy_dynamic_memory(data->log_filename);
     destroy_dynamic_memory( data->statistics_filename);
 

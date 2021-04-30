@@ -1,0 +1,8 @@
+10
+10
+1
+1
+1
+log_file
+stats_file
+7

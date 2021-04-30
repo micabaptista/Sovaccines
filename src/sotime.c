@@ -4,10 +4,7 @@
 #include "../include/sotime.h"
 #include "../include/memory.h"
 
-/*
-* Funçao que marca o tempo atual.
-* Retorna -1 em caso de erro.
-*/
+
 void marcaTempo(struct timespec* tempo){
     clock_gettime( CLOCK_REALTIME, tempo);   
 }
