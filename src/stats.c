@@ -10,17 +10,17 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
     double dif;
     fputs("Process Statistics:\n", fp);
     for (int i = 0; i < data->n_clients; ++i) {
-        sprintf(text, "Cliente %d recebeu de %d processos!\n", i, (data->client_stats[i]));
+        sprintf(text, "Client %d received %d requests!\n", i, (data->client_stats[i]));
         fputs(text, fp);
     }
 
     for (int i = 0; i < data->n_proxies; ++i) {
-        sprintf(text, "Proxy %d encaminhou de %d processo!\n", i, (data->proxy_stats[i]));
+        sprintf(text, "Proxy %d forwarded de %d requests!\n", i, (data->proxy_stats[i]));
         fputs(text, fp);
     }
 
     for (int i = 0; i < data->n_servers; ++i) {
-        sprintf(text, "Server %d respondeu de %d processo!\n", i, (data->server_stats[i]));
+        sprintf(text, "Server %d responded de %d requests!\n", i, (data->server_stats[i]));
         fputs(text, fp);
     }
 
@@ -46,8 +46,6 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
         sprintf(text, "Server_id: %d\n", op.server);
         fputs(text,fp);
 
-        sprintf(text, "Created: %d\n", op.client);
-        fputs(text,fp);
 
         char timeFormat [40 * sizeof (int)];
 
@@ -73,8 +71,8 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
 
         dif = ( op.end_time.tv_sec - op.start_time.tv_sec ) + ( op.end_time.tv_nsec - op.start_time.tv_nsec ) / 1000000000L;
 
-         sprintf(text, "Ended: %f\n",dif);
-
+        sprintf(text, "Total Time: %f\n",dif);
+        fputs(text,fp);
     }
     
 

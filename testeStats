@@ -1,49 +1,38 @@
 Process Statistics:
-Cliente 0 recebeu de 4 processos!
-Proxy 0 encaminhou de 4 processo!
-Server 0 respondeu de 4 processo!
+Client 0 received 3 requests!
+Proxy 0 forwarded de 3 requests!
+Server 0 responded de 3 requests!
 Operation Statistics:
 OP: 0
 Status: S
 Client_id: 0
 Proxy_id: 0
 Server_id: 0
-Created: 0
-Created: 1970-1-1 0:59:59.0
-Client_time: 2021-4-29 10:20:45.485
-Proxy_time: 2021-4-29 10:20:45.485
-Server_time: 2021-4-29 10:20:45.485
-Ended: 1970-1-1 0:59:59.0
+Created: 2021-4-29 23:54:0.373
+Client_time: 2021-4-29 23:54:0.917
+Proxy_time: 2021-4-29 23:54:0.917
+Server_time: 2021-4-29 23:54:0.917
+Ended: 2021-4-29 23:54:0.917
+Total Time: 0.000000
 OP: 1
 Status: S
 Client_id: 0
 Proxy_id: 0
 Server_id: 0
-Created: 0
-Created: 1970-1-1 0:59:59.0
-Client_time: 2021-4-29 10:20:46.752
-Proxy_time: 2021-4-29 10:20:46.752
-Server_time: 2021-4-29 10:20:46.752
-Ended: 1970-1-1 0:59:59.0
+Created: 2021-4-29 23:54:0.927
+Client_time: 2021-4-29 23:54:1.471
+Proxy_time: 2021-4-29 23:54:1.471
+Server_time: 2021-4-29 23:54:1.471
+Ended: 2021-4-29 23:54:1.471
+Total Time: 1.000000
 OP: 2
 Status: S
 Client_id: 0
 Proxy_id: 0
 Server_id: 0
-Created: 0
-Created: 1970-1-1 0:59:59.0
-Client_time: 2021-4-29 10:20:47.425
-Proxy_time: 2021-4-29 10:20:47.425
-Server_time: 2021-4-29 10:20:47.425
-Ended: 1970-1-1 0:59:59.0
-OP: 3
-Status: S
-Client_id: 0
-Proxy_id: 0
-Server_id: 0
-Created: 0
-Created: 1970-1-1 0:59:59.0
-Client_time: 2021-4-29 10:20:47.941
-Proxy_time: 2021-4-29 10:20:47.941
-Server_time: 2021-4-29 10:20:47.941
-Ended: 1970-1-1 0:59:59.0
+Created: 2021-4-29 23:54:1.982
+Client_time: 2021-4-29 23:54:2.526
+Proxy_time: 2021-4-29 23:54:2.526
+Server_time: 2021-4-29 23:54:2.526
+Ended: 2021-4-29 23:54:2.526
+Total Time: 1.000000

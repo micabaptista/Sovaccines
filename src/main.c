@@ -47,6 +47,7 @@ void create_dynamic_memory_buffers(struct main_data *data) {
     data->client_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->proxy_stats = create_dynamic_memory(data->max_ops * sizeof(int));
     data->server_stats = create_dynamic_memory(data->max_ops * sizeof(int));
+
     data->log_filename = create_dynamic_memory(sizeof(char) * 10);
     data->statistics_filename = create_dynamic_memory(sizeof(char) * 10);
 
@@ -96,28 +97,32 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
     sems->results_mutex = semaphore_create(STR_SEM_RESULTS_MUTEX, 1);
 }
 
-void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
+        ,FILE * fp) {
+
     for (int i = 0; i < data->n_clients; ++i) {
-        data->client_pids[i] = launch_process(i, 0, buffers, data, sems);
+        data->client_pids[i] = launch_process(i, 0, buffers, data, sems,fp);
     }
     for (int i = 0; i < data->n_proxies; ++i) {
-        data->proxy_pids[i] = launch_process(i, 1, buffers, data, sems);
+        data->proxy_pids[i] = launch_process(i, 1, buffers, data, sems,fp);
 
     }
     for (int i = 0; i < data->n_servers; ++i) {
-        data->server_pids[i] = launch_process(i, 2, buffers, data, sems);
+        data->server_pids[i] = launch_process(i, 2, buffers, data, sems,fp);
     }
 }
 
 
 
 
-void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
-    char msg[4];;
-    acionaAlarme(data, sems);
+void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
+        ,FILE * log) {
 
-    FILE *log = openLogFile(data->log_filename);
-    capturaSinal(buffers, sems,log);
+    capturaSinal(buffers, sems, log);
+
+
+    char msg[4];
+    acionaAlarme(data, sems);
 
     printf("Ações disponíveis: \n");
     printf("        op - criar um pedido de aquisição de vacinas.\n");
@@ -136,8 +141,7 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
             read_answer(data, sems, log);
         } else if (strcmp(msg, "stop") == 0) {
             registaLog(log, msg);
-            closeLogFile(log);
-            stop_execution(data, buffers, sems);
+            stop_execution(data, buffers, sems,log);
             return;
         } else if (strcmp(msg, "help") == 0) {
             registaLog(log, msg);
@@ -152,21 +156,20 @@ void user_interaction(struct communication_buffers *buffers, struct main_data *d
         }
         usleep(10000);
     }
-    closeLogFile(log);
 }
 
 void create_request(int *op_counter, struct communication_buffers *buffers, struct main_data *data,
                     struct semaphores *sems) {
                     
-    struct timespec time = {-1, -1};
     if (*op_counter < data->max_ops) {
+        struct timespec time = {-1, -1};
         struct operation op = {*op_counter, ' ', -1, -1, -1, time, time, time, time, time};
 
         produce_begin(sems->main_cli);
-        write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
-        produce_end(sems->main_cli);
         marcaTempo(&op.start_time);
-
+        write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
+        usleep(543210);
+        produce_end(sems->main_cli);
         printf("O pedido #%d foi criado!\n", *data->client_stats);
         *op_counter = *op_counter + 1;
     } else {
@@ -234,8 +237,9 @@ void read_answer(struct main_data *data, struct semaphores *sems, FILE * fp) {
 }
 
 
-void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems ){
+void stop_execution(struct main_data *data, struct communication_buffers *buffers, struct semaphores *sems, FILE * fp){
     *data->terminate = 1;
+    closeLogFile(fp);
     wakeup_processes(data, sems);
     wait_processes(data);
     write_statistics(data);
@@ -284,7 +288,6 @@ void wait_processes(struct main_data *data) {
     }
 }
 
-//acho que via desaparecer
 void write_statistics(struct main_data *data) {
 
     printf("Terminando o sovaccines! Imprimindo estatísticas:\n");

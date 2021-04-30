@@ -16,6 +16,4 @@ void formataTempo(struct timespec * tempo, char * timeFormat){
     struct tm* time2 = localtime(&tempo->tv_sec);
     time_t milli = (tempo->tv_nsec) / 1000000;
     sprintf(timeFormat, "%d-%d-%d %d:%d:%d.%d", 1900 + time2->tm_year, time2->tm_mon + 1, time2->tm_mday, time2->tm_hour, time2->tm_min, time2->tm_sec, (int) milli);
-    printf("ola11\n");
-
 }

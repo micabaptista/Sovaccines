@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "../include/proxy.h"
 #include "../include/sotime.h"
+#include "../include/sosignal.h"
 #include <stdbool.h>
 
 //SO-036
@@ -9,19 +10,23 @@
 // Duarte Pinheiro, 54475
 
 int
-execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems,
+        FILE * fp) {
     while (true) {
+
         struct operation op;
         proxy_receive_operation(&op, buffers, data, sems);
         if (op.id != -1 && *data->terminate == 0) {
             proxy_process_operation(&op, proxy_id, &data->proxy_stats[proxy_id]);
-             marcaTempo(&op.proxy_time);
+            marcaTempo(&op.proxy_time);
             proxy_forward_operation(&op, buffers, data, sems);
         }
 
         if (op.id != -1 && *data->terminate == 1) {
             return data->proxy_stats[proxy_id];
         }
+        capturaSinal(buffers, sems,fp);
+
     }
 }
 

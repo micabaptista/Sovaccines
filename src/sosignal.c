@@ -33,7 +33,7 @@ void write_status(){
           
           if (op.status == 'C'|| op.status == 'P'|| op.status == 'S' )
           {
-            printf("op:%d status:%c start:%ld", op.id, op.status, op.start_time.tv_sec);
+            printf("op:%d status:%c start:%ld ", op.id, op.status, op.start_time.tv_sec);
             printf("client:%d client_time:%ld ", op.client, op.client_time.tv_sec);
             printf("proxy:%d proxy_time:%ld ", op.proxy, op.proxy_time.tv_sec);
             printf("server:%d server_time:%ld end:%ld \n", op.server, op.server_time.tv_sec, op.end_time.tv_sec);
@@ -62,7 +62,6 @@ void write_status(){
 * Retorna -1 em caso de erro.
 */
 void acionaAlarme( struct main_data* data, struct semaphores *sems){
-    printf("ALARME\n");
     struct itimerval val;
     data_global = data;
     sems_global = sems;
@@ -81,22 +80,20 @@ void acionaAlarme( struct main_data* data, struct semaphores *sems){
 /**/
 
 void ctrlC(){
-    signal(SIGINT,ctrlC);
-    registaLog(log_global, "ctrl C");
-    stop_execution(data_global, buffers_global, sems_global);
-    exit(1);
+    stop_execution(data_global, buffers_global, sems_global,log_global);
+    exit(0);
 }
 
 
-void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE *log ){
+void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE * log ){
   buffers_global = buffers;
   sems_global = sems;
   log_global = log;
   struct sigaction sa;
-  sa.sa_handler = ctrlC;
-  sa.sa_flags = 0;
   sigemptyset(&sa.sa_mask);
-  
+  sa.sa_handler = ctrlC;
+  sa.sa_flags= SA_RESTART;
+
   if (sigaction(SIGINT, &sa, NULL) == -1) {
     perror("main:");
     exit(-1);

@@ -13,7 +13,8 @@
 * operações processadas. Para efetuar estes passos, pode usar os outros
 * métodos auxiliares definidos em proxy.h.
 */
-int execute_proxy(int proxy_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
+int execute_proxy(int proxy_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems,
+        FILE * fp);
 
 
 /* Função que lê uma operação do buffer de memória partilhada entre

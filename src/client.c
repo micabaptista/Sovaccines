@@ -1,7 +1,9 @@
 #include "../include/client.h"
 #include "../include/sotime.h"
+#include "../include/sosignal.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <unistd.h>
 
 //SO-036
 // Michael Baptista, 54478
@@ -9,9 +11,9 @@
 // Duarte Pinheiro, 54475
 
 int
-execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
+        ,FILE* fp) {
     while (true) {
-
 
         struct operation op;
 
@@ -32,6 +34,8 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
 
             return data->client_stats[client_id];
         }
+        capturaSinal(buffers, sems,fp);
+
     }
 }
 
@@ -76,9 +80,11 @@ void client_receive_answer(struct operation *op, struct communication_buffers *b
    
 
 void client_process_answer(struct operation *op, struct main_data *data, struct semaphores *sems) {
+    marcaTempo(&op->end_time);
     semaphore_mutex_lock(sems->results_mutex);
     data->results[op->id] = *op; // data->results = op;
     printf("Pedido #%d concluído! É agora possível consultar!\n", op->id);
     semaphore_mutex_unlock(sems->results_mutex);
+
 }
 

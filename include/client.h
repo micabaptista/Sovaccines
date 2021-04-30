@@ -15,7 +15,8 @@
 * o número de operações processadas. Para efetuar estes passos, pode usar os
 * outros métodos auxiliares definidos em client.h. 
 */
-int execute_client(int client_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
+int execute_client(int client_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems
+        ,FILE * fp);
 
 
 /* Função que lê uma operação do buffer de memória partilhada entre a 

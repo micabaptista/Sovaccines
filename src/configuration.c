@@ -14,7 +14,6 @@ void getInfo(char *inputFile, struct main_data * data)
     FILE *fp = fopen(inputFile, "r");
     char * line = NULL ;
     size_t len = 0;
-  
 
 
     getline(&line, &len, fp);
