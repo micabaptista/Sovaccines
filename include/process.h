@@ -11,7 +11,7 @@
 * do processo criado.
 */
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
-                   struct semaphores *sems, FILE * fp);
+                   struct semaphores *sems);
 
 /* Função que espera que um processo termine através da função waitpid. 
 * Devolve o retorno do processo, se este tiver terminado normalmente.

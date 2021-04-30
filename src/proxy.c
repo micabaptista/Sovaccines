@@ -10,8 +10,8 @@
 // Duarte Pinheiro, 54475
 
 int
-execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems,
-        FILE * fp) {
+execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+    ignore();
     while (true) {
 
         struct operation op;
@@ -25,8 +25,6 @@ execute_proxy(int proxy_id, struct communication_buffers *buffers, struct main_d
         if (op.id != -1 && *data->terminate == 1) {
             return data->proxy_stats[proxy_id];
         }
-        capturaSinal(buffers, sems,fp);
-
     }
 }
 

@@ -25,8 +25,7 @@ void write_status(){
       for (int i = 0; i < data_global->max_ops; i++)
       {
 
-        if (i < *data_global->client_stats /*nao sei se esta certo*/)
-        {
+        if (i < *data_global->client_stats){
           semaphore_mutex_lock(sems_global->results_mutex);
           op = data_global->results[i];
           semaphore_mutex_unlock(sems_global->results_mutex);
@@ -98,7 +97,21 @@ void capturaSinal( struct communication_buffers* buffers, struct semaphores* sem
     perror("main:");
     exit(-1);
   }
+
   
+}
+
+
+void ignore (){
+    struct sigaction sa;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags= SA_RESTART;
+
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("main:");
+        exit(-1);
+    }
 }
 
 

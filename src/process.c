@@ -16,7 +16,7 @@
 // Duarte Pinheiro, 54475
 
 int launch_process(int process_id, int process_code, struct communication_buffers *buffers, struct main_data *data,
-                   struct semaphores *sems, FILE * fp) {
+                   struct semaphores *sems) {
     int pid ;
     int value;
     if ((pid = fork()) == -1) {
@@ -26,13 +26,13 @@ int launch_process(int process_id, int process_code, struct communication_buffer
     if (pid == 0) { //fork funcionou e este processo é o filho
         /* Processo filho */
         if (process_code == 0) {
-            value = execute_client(process_id, buffers, data, sems,fp);
+            value = execute_client(process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 1) {
-            value = execute_proxy( process_id, buffers, data, sems,fp);
+            value = execute_proxy( process_id, buffers, data, sems);
             exit(value);
         } else if (process_code == 2) {
-            value = execute_server( process_id, buffers, data, sems,fp);
+            value = execute_server( process_id, buffers, data, sems);
             exit(value);
         }
     } else {

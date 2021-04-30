@@ -13,8 +13,7 @@
 * número de operações processadas. Para efetuar estes passos, pode usar os
 * outros métodos auxiliares definidos em server.h.
 */
-int execute_server(int server_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems
-        ,FILE *fp);
+int execute_server(int server_id, struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
 
 
 /* Função que lê uma operação do buffer de memória partilhada entre

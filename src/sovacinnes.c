@@ -31,11 +31,10 @@ int main(int argc, char *argv[]) {
 //execute main code
     create_dynamic_memory_buffers(data);
     main_args(argc, argv, data);
-    FILE * log = openLogFile(data->log_filename);
     create_shared_memory_buffers(data, buffers);
     create_semaphores(data, sems);
-    launch_processes(buffers, data, sems,log);
-    user_interaction(buffers, data, sems,log);
+    launch_processes(buffers, data, sems);
+    user_interaction(buffers, data, sems);
 //release final memory
     destroy_dynamic_memory(data);
     destroy_dynamic_memory(buffers->main_cli);

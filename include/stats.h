@@ -4,6 +4,6 @@
 #include "../include/main.h"
 #include <stdio.h>
 
-void write_stats(struct main_data *data, char * name, struct semaphores *sems);
+void write_stats(struct main_data *data, struct semaphores *sems);
 
 #endif //SOVACCINES_STATS_H

@@ -33,8 +33,6 @@ void main_args(int argc, char *argv[], struct main_data * data) {
     } else {
         getInfo(argv[1], data);
     }
-    
-    
 }
 
 
@@ -97,29 +95,27 @@ void create_semaphores(struct main_data *data, struct semaphores *sems) {
     sems->results_mutex = semaphore_create(STR_SEM_RESULTS_MUTEX, 1);
 }
 
-void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
-        ,FILE * fp) {
+void launch_processes(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
 
     for (int i = 0; i < data->n_clients; ++i) {
-        data->client_pids[i] = launch_process(i, 0, buffers, data, sems,fp);
+        data->client_pids[i] = launch_process(i, 0, buffers, data, sems);
     }
     for (int i = 0; i < data->n_proxies; ++i) {
-        data->proxy_pids[i] = launch_process(i, 1, buffers, data, sems,fp);
+        data->proxy_pids[i] = launch_process(i, 1, buffers, data, sems);
 
     }
     for (int i = 0; i < data->n_servers; ++i) {
-        data->server_pids[i] = launch_process(i, 2, buffers, data, sems,fp);
+        data->server_pids[i] = launch_process(i, 2, buffers, data, sems);
     }
 }
 
 
 
 
-void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
-        ,FILE * log) {
+void user_interaction(struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
 
+    FILE * log = openLogFile(data->log_filename);
     capturaSinal(buffers, sems, log);
-
 
     char msg[4];
     acionaAlarme(data, sems);
@@ -162,13 +158,12 @@ void create_request(int *op_counter, struct communication_buffers *buffers, stru
                     struct semaphores *sems) {
                     
     if (*op_counter < data->max_ops) {
-        struct timespec time = {-1, -1};
+        struct timespec time = {0, 0};
         struct operation op = {*op_counter, ' ', -1, -1, -1, time, time, time, time, time};
 
         produce_begin(sems->main_cli);
         marcaTempo(&op.start_time);
         write_rnd_access_buffer(buffers->main_cli, data->buffers_size, &op);
-        usleep(543210);
         produce_end(sems->main_cli);
         printf("O pedido #%d foi criado!\n", *data->client_stats);
         *op_counter = *op_counter + 1;
@@ -242,8 +237,9 @@ void stop_execution(struct main_data *data, struct communication_buffers *buffer
     closeLogFile(fp);
     wakeup_processes(data, sems);
     wait_processes(data);
+
     write_statistics(data);
-    write_stats(data, data->statistics_filename, sems);
+    write_stats(data, sems);
     destroy_semaphores(sems);
     destroy_shared_memory_buffers(data, buffers);
     destroy_dynamic_memory_buffers(data);

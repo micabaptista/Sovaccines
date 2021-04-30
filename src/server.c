@@ -13,8 +13,8 @@
 // Duarte Pinheiro, 54475
 
 int
-execute_server(int server_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems,
-        FILE * fp) {
+execute_server(int server_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+    ignore();
     while (true) {
 
         struct operation op;
@@ -30,8 +30,6 @@ execute_server(int server_id, struct communication_buffers *buffers, struct main
         if (op.id != -1 && *data->terminate == 1) {
             return data->server_stats[server_id];
         }
-        capturaSinal(buffers, sems,fp);
-
     }
 }
 

@@ -2,12 +2,11 @@
 #include "../include/sotime.h"
 
 
-void write_stats(struct main_data *data, char * name, struct semaphores *sems){
-    FILE * fp = fopen(name, "w");
+void write_stats(struct main_data *data, struct semaphores *sems){
+    FILE * fp = fopen(data->statistics_filename, "w");
     char text [100];
     struct operation op;
-    
-    double dif;
+
     fputs("Process Statistics:\n", fp);
     for (int i = 0; i < data->n_clients; ++i) {
         sprintf(text, "Client %d received %d requests!\n", i, (data->client_stats[i]));
@@ -25,12 +24,19 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
     }
 
     fputs("Operation Statistics:\n", fp);
-    for (int i = 0; i < *data->client_stats; i++)
-    {
+
+    int temp1 = 0;
+    for (int i = 0; i < data->n_clients ; ++i) {
+        temp1 = temp1 + data->client_stats[i];
+    }
+
+    printf("%d",temp1);
+
+    for (int i = 0; i < temp1; i++){
         semaphore_mutex_lock(sems->results_mutex);
         op = data->results[i];
         semaphore_mutex_unlock(sems->results_mutex);
-        //ver se funciona fputs + fputs
+
         sprintf(text, "OP: %d\n", op.id);
         fputs(text,fp);
 
@@ -69,12 +75,12 @@ void write_stats(struct main_data *data, char * name, struct semaphores *sems){
         sprintf(text, "Ended: %s\n", timeFormat);
         fputs(text,fp);
 
-        dif = ( op.end_time.tv_sec - op.start_time.tv_sec ) + ( op.end_time.tv_nsec - op.start_time.tv_nsec ) / 1000000000L;
+        int sec = ( op.end_time.tv_sec - op.start_time.tv_sec );
+        int msec = ( op.end_time.tv_nsec - op.start_time.tv_nsec ) / 1000000L;
 
-        sprintf(text, "Total Time: %f\n",dif);
+        sprintf(text, "Total Time: %d.%d\n",abs(sec),abs(msec));
         fputs(text,fp);
     }
-    
 
     fclose(fp);
 }

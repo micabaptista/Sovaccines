@@ -17,4 +17,7 @@ void write_status();
 void capturaSinal( struct communication_buffers* buffers, struct semaphores* sems, FILE * fp);
  
 void ctrlC ();
+
+
+void ignore();
 #endif //SOVACCINES_SOSIGNAL_H

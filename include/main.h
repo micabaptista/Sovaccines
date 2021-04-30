@@ -67,7 +67,7 @@ void create_semaphores(struct main_data* data, struct semaphores* sems);
 * guardando os pids resultantes nos arrays respetivos
 * da estrutura data.
 */
-void launch_processes(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems,FILE*fp);
+void launch_processes(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
 
 /* Função que faz interação do utilizador com o sistema, podendo receber 4 comandos:
 * op - cria uma nova operação, através da função create_request
@@ -79,7 +79,7 @@ void launch_processes(struct communication_buffers* buffers, struct main_data* d
 
 
 
-void user_interaction(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems, FILE*log);
+void user_interaction(struct communication_buffers* buffers, struct main_data* data, struct semaphores* sems);
 
 /* Se o limite de operações ainda não tiver sido atingido, cria uma nova
 * operação identificada pelo valor atual de op_counter, escrevendo a mesma

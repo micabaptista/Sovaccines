@@ -11,8 +11,8 @@
 // Duarte Pinheiro, 54475
 
 int
-execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems
-        ,FILE* fp) {
+execute_client(int client_id, struct communication_buffers *buffers, struct main_data *data, struct semaphores *sems) {
+    ignore();
     while (true) {
 
         struct operation op;
@@ -34,8 +34,6 @@ execute_client(int client_id, struct communication_buffers *buffers, struct main
 
             return data->client_stats[client_id];
         }
-        capturaSinal(buffers, sems,fp);
-
     }
 }
 
