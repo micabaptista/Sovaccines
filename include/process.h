@@ -3,6 +3,12 @@
 
 #include "memory.h"
 #include "main.h"
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 /* Função que inicia um processo através da função fork do SO. O novo
 * processo pode ser um cliente, proxy, ou servidor, consoante a variável

@@ -3,6 +3,12 @@
 
 #include "memory.h"
 #include "main.h"
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 /* Função principal de um Servidor. Deve executar um ciclo infinito onde em 
 * cada iteração do ciclo lê uma operação dos proxies e se a mesma tiver id 

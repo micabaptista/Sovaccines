@@ -4,6 +4,7 @@
 #include "memory-private.h"
 #include <time.h>
 
+
 // Nomes usados na criação de zonas de memoria partilhada
 #define STR_SHM_MAIN_CLI_PTR 			"SHM_MAIN_CLI_PTR"
 #define STR_SHM_MAIN_CLI_BUFFER 		"SHM_MAIN_CLI_BUFFER"
@@ -16,6 +17,12 @@
 #define STR_SHM_RESULTS					"SHM_RESULTS"
 #define STR_SHM_TERMINATE				"SHM_TERMINATE"
 
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 //Estrutura que representa uma operação (pedido/resposta)
 struct operation {

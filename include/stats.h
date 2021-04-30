@@ -3,6 +3,12 @@
 
 #include "../include/main.h"
 #include <stdio.h>
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 /**
  * Escreve todas as estatísticas num ficheiro que foram feitas durante a execução do programa

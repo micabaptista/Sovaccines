@@ -1,5 +1,11 @@
 #ifndef MEMORY_PRIVATE_H_GUARD
 #define MEMORY_PRIVATE_H_GUARD
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 //estrutura que representa um buffer circular, completar pelos alunos
 struct circular_buffer {

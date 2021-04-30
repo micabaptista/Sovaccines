@@ -1,5 +1,11 @@
 #ifndef SOVACCINES_LOG_H
 #define SOVACCINES_LOG_H
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 /**
  * Devolve um apontador para o ficheiro cujo o path é dado no name.

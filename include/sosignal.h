@@ -3,6 +3,13 @@
 #define SOVACCINES_SOSIGNAL_H
 
 /**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
+
+/**
  * Funçao que marca o tempo atual.
  * @param data data main
  * @param sems semáforos

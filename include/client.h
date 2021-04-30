@@ -3,7 +3,12 @@
 
 #include "memory.h"
 #include "main.h"
-
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 /* Função principal de um Cliente. Deve executar um ciclo infinito
 * onde cada iteração do ciclo tem dois passos: primeiro, lê uma operação
 * da main e se a mesma lida tiver id diferente de -1 e se data->terminate

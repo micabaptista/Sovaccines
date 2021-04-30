@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 /**
  * Função que verifica se os valores recebidos pelo ficheiro txt são parametros válidos para a normal execução do

@@ -18,6 +18,13 @@
 #define STR_SEM_SRV_CLI_MUTEX 	"sem_srv_cli_mutex"
 #define STR_SEM_RESULTS_MUTEX	"sem_results_mutex"
 
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
+
 //estrutura de 3 semáforos utilizada no modelo produtor/consumidor
 struct prodcons {
 	sem_t *full, *empty, *mutex;

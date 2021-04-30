@@ -4,7 +4,12 @@
 #include <stdlib.h>
 #include "memory.h"
 #include "synchronization.h"
-
+/**
+* SO-036
+* Michael Baptista, 54478
+* Afonso Rosa, 54395
+* Duarte Pinheiro, 54475
+ */
 
 //Estrutura que agrega a informação necessária pela main do sovaccines.
 struct main_data {
